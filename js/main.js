@@ -1030,25 +1030,25 @@ function updateSeedChance() {
  */
 function updateData() {
 
-    options.season = parseInt(element('select_season').value);
+    options.season = parseInt(element('select_season').get());
     const isGreenhouse = options.season === 4;
 
-	options.produce = parseInt(element('select_produce').value);
+	options.produce = parseInt(element('select_produce').get());
 
 	if (element('number_planted').value <= 0)
 		element('number_planted').value = 1;
-	options.planted = element('number_planted').value;
+	options.planted = element('number_planted').get();
 
-	if (element('max_seed_money').value < 0)
+	if (element('max_seed_money').get() < 0)
 		element('max_seed_money').value = '0';
-	options.maxSeedMoney = parseInt(element('max_seed_money').value);
+	options.maxSeedMoney = parseInt(element('max_seed_money').get());
 	if (isNaN(options.maxSeedMoney)) {
 		options.maxSeedMoney = 0;
 	}
 
-	options.average = element('check_average').checked;
+	options.average = element('check_average').get();
     
-    options.crossSeason = element('cross_season').checked;
+    options.crossSeason = element('cross_season').get();
 
     if (!isGreenhouse) {
         element('current_day_row').style.display = 'table-row';
@@ -1059,48 +1059,48 @@ function updateData() {
             element('current_day').value = 1;
         if (options.crossSeason) {
             element('number_days').value = 56;
-            if (element('current_day').value > 56)
+            if (element('current_day').get() > 56)
                 element('current_day').value = 56;
-            options.days = 57 - element('current_day').value;
+            options.days = 57 - element('current_day').get();
         }
         else {
             element('number_days').value = 28;
-            if (element('current_day').value > 28)
+            if (element('current_day').get() > 28)
                   element('current_day').value = 28;
-            options.days = 29 - element('current_day').value;
+            options.days = 29 - element('current_day').get();
         }
     } else {
         element('current_day_row').style.display = 'none';
         element('number_days').disabled = false;
         element('cross_season_row').style.display = 'none';
 
-        if (element('number_days').value > 100000)
+        if (element('number_days').get() > 100000)
             element('number_days').value = 100000;
-        options.days = element('number_days').value;
+        options.days = element('number_days').get();
     }
 
-	options.seeds.pierre = element('check_seedsPierre').checked;
-	options.seeds.joja = element('check_seedsJoja').checked;
-	options.seeds.special = element('check_seedsSpecial').checked;
+	options.seeds.pierre = element('check_seedsPierre').get();
+	options.seeds.joja = element('check_seedsJoja').get();
+	options.seeds.special = element('check_seedsSpecial').get();
 
-	options.buySeed = element('check_buySeed').checked;
+	options.buySeed = element('check_buySeed').get();
 
-	options.fertilizer = parseInt(element('select_fertilizer').value);
+	options.fertilizer = parseInt(element('select_fertilizer').get());
 
-	options.buyFert = element('check_buyFert').checked;
+	options.buyFert = element('check_buyFert').get();
 	
-	options.fertilizerSource = parseInt(element('speed_gro_source').value);
+	options.fertilizerSource = parseInt(element('speed_gro_source').get());
 
 	if (element('farming_level').value <= 0)
 		element('farming_level').value = 1;
-	if (element('farming_level').value > 13)
+	if (element('farming_level').get() > 13)
 		element('farming_level').value = 13;
-	options.level = parseInt(element('farming_level').value);
+	options.level = parseInt(element('farming_level').get());
 
 	if (options.level >= 5) {
 		element('check_skillsTill').disabled = false;
 		element('check_skillsTill').style.cursor = "pointer";
-		options.skills.till = element('check_skillsTill').checked;
+		options.skills.till = element('check_skillsTill').get();
 	}
 	else {
 		element('check_skillsTill').disabled = true;
@@ -1132,14 +1132,14 @@ function updateData() {
 
     if (element('foraging_level').value <= 0)
         element('foraging_level').value = 1;
-    if (element('foraging_level').value > 13)
+    if (element('foraging_level').get() > 13)
         element('foraging_level').value = 13;
-    options.foragingLevel = parseInt(element('foraging_level').value);
+    options.foragingLevel = parseInt(element('foraging_level').get());
 
     if (options.foragingLevel >= 5) {
         element('check_skillsGatherer').disabled = false;
         element('check_skillsGatherer').style.cursor = "pointer";
-        options.skills.gatherer = element('check_skillsGatherer').checked;
+        options.skills.gatherer = element('check_skillsGatherer').get();
     }
     else {
         element('check_skillsGatherer').disabled = true;
@@ -1150,7 +1150,7 @@ function updateData() {
     if (options.foragingLevel >= 10 && options.skills.gatherer) {
         element('check_skillsBotanist').disabled = false;
         element('check_skillsBotanist').style.cursor = "pointer";
-        options.skills.botanist = element('check_skillsBotanist').checked;
+        options.skills.botanist = element('check_skillsBotanist').get();
     }
     else {
         element('check_skillsBotanist').disabled = true;
@@ -1158,14 +1158,14 @@ function updateData() {
         element('check_skillsBotanist').checked = false;
     }
 
-	options.foodIndex = element('select_food').value;
+	options.foodIndex = element('select_food').get();
 	options.foodLevel = parseInt(element('select_food').options[options.foodIndex].value);
 	if (options.buyFert && options.fertilizer == 4)
 		element('speed_gro_source').disabled = false;
 	else
 		element('speed_gro_source').disabled = true;
 
-	options.extra = element('check_extra').checked;
+	options.extra = element('check_extra').get();
 
     updateSeasonNames();
 
@@ -1177,7 +1177,16 @@ function updateData() {
 	sortCrops();
 }
 
-function element(id) { return document.getElementById(id); }
+function element(id) {
+	const element = document.getElementById(id);
+	let type = element.getAttribute('type');
+	let valueType = (type=='checkbox' || type=='radio') ? 'checked' : 'value';
+	function getValue(element, valueType) {
+		return element[valueType];
+	}
+	element.get =()=> getValue(element, valueType);
+	return element;
+}
 
 /*
  * Called once on startup to draw the UI.
