@@ -1200,6 +1200,10 @@ function initial() {
 	optionsLoad();
 	updateData();
 	renderGraph();
+	for (const el of document.querySelectorAll('[sl-change]')) {
+		let onchange = el.getAttribute('sl-change');
+		if (onchange=='refresh') el.addEventListener('sl-input', refresh);
+	}
 }
 
 /*
