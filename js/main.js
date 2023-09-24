@@ -1036,11 +1036,11 @@ function updateData() {
 	options.produce = parseInt(element('select_produce').get());
 
 	if (element('number_planted').value <= 0)
-		element('number_planted').value = 1;
+		element('number_planted').set(1);
 	options.planted = element('number_planted').get();
 
 	if (element('max_seed_money').get() < 0)
-		element('max_seed_money').value = '0';
+		element('max_seed_money').set('0');
 	options.maxSeedMoney = parseInt(element('max_seed_money').get());
 	if (isNaN(options.maxSeedMoney)) {
 		options.maxSeedMoney = 0;
@@ -1056,17 +1056,17 @@ function updateData() {
         element('cross_season_row').style.display = 'table-row';
 
         if (element('current_day').value <= 0)
-            element('current_day').value = 1;
+            element('current_day').set(1);
         if (options.crossSeason) {
-            element('number_days').value = 56;
+            element('number_days').set(56);
             if (element('current_day').get() > 56)
-                element('current_day').value = 56;
+                element('current_day').set(56);
             options.days = 57 - element('current_day').get();
         }
         else {
-            element('number_days').value = 28;
+            element('number_days').set(28);
             if (element('current_day').get() > 28)
-                  element('current_day').value = 28;
+                  element('current_day').set(28);
             options.days = 29 - element('current_day').get();
         }
     } else {
@@ -1075,7 +1075,7 @@ function updateData() {
         element('cross_season_row').style.display = 'none';
 
         if (element('number_days').get() > 100000)
-            element('number_days').value = 100000;
+            element('number_days').set(100000);
         options.days = element('number_days').get();
     }
 
@@ -1092,9 +1092,9 @@ function updateData() {
 	options.fertilizerSource = parseInt(element('speed_gro_source').get());
 
 	if (element('farming_level').value <= 0)
-		element('farming_level').value = 1;
+		element('farming_level').set(1);
 	if (element('farming_level').get() > 13)
-		element('farming_level').value = 13;
+		element('farming_level').set(13);
 	options.level = parseInt(element('farming_level').get());
 
 	if (options.level >= 5) {
@@ -1115,7 +1115,7 @@ function updateData() {
 	else {
 		element('select_skills').disabled = true;
 		element('select_skills').style.cursor = "default";
-		element('select_skills').value = 0;
+		element('select_skills').set(0);
 	}
 	if (element('select_skills').value == 1) {
 		options.skills.agri = true;
@@ -1131,9 +1131,9 @@ function updateData() {
 	}
 
     if (element('foraging_level').value <= 0)
-        element('foraging_level').value = 1;
+        element('foraging_level').set(1);
     if (element('foraging_level').get() > 13)
-        element('foraging_level').value = 13;
+        element('foraging_level').set(13);
     options.foragingLevel = parseInt(element('foraging_level').get());
 
     if (options.foragingLevel >= 5) {
@@ -1184,7 +1184,12 @@ function element(id) {
 	function getValue(element, valueType) {
 		return element[valueType];
 	}
+	function setValue(element, valueType, newValue) {
+		if (valueType=='checked') element.checked = !!newValue;
+		element.value = newValue;
+	}
 	element.get =()=> getValue(element, valueType);
+	element.set =(newValue)=> setValue(element, valueType, newValue);
 	return element;
 }
 
@@ -1224,16 +1229,16 @@ function optionsLoad() {
 	}
 
 	options.season = validIntRange(0, 4, options.season);
-	element('select_season').value = options.season;
+	element('select_season').set(options.season);
 
 	options.produce = validIntRange(0, 2, options.produce);
-	element('select_produce').value = options.produce;
+	element('select_produce').set(options.produce);
 
 	options.planted = validIntRange(1, MAX_INT, options.planted);
-	element('number_planted').value = options.planted;
+	element('number_planted').set(options.planted);
 
     options.maxSeedMoney = validIntRange(0, MAX_INT, options.maxSeedMoney);
-    element('max_seed_money').value = options.maxSeedMoney;
+    element('max_seed_money').set(options.maxSeedMoney);
 
 	options.average = validBoolean(options.average);
 	element('check_average').checked = options.average;
@@ -1249,16 +1254,16 @@ function optionsLoad() {
 
     options.days = validIntRange(1, daysMax, options.days);
     if (options.season === 4) {
-        element('number_days').value = options.days;
+        element('number_days').set(options.days);
     } 
     else {
         if (options.crossSeason) {
-            element('number_days').value = 56;
-            element('current_day').value = 57 - options.days;
+            element('number_days').set(56);
+            element('current_day').set(57 - options.days);
         }
         else {
-            element('number_days').value = 28;
-            element('current_day').value = 29 - options.days;
+            element('number_days').set(28);
+            element('current_day').set(29 - options.days);
         }
     }
 
@@ -1275,16 +1280,16 @@ function optionsLoad() {
 	element('check_buySeed').checked = options.buySeed;
 
 	options.fertilizer = validIntRange(0, 6, options.fertilizer);
-	element('select_fertilizer').value = options.fertilizer;
+	element('select_fertilizer').set(options.fertilizer);
 
     options.fertilizerSource = validIntRange(0, 1, options.fertilizerSource);
-    element('speed_gro_source').value = options.fertilizerSource;
+    element('speed_gro_source').set(options.fertilizerSource);
 
 	options.buyFert = validBoolean(options.buyFert);
 	element('check_buyFert').checked = options.buyFert;
 
 	options.level = validIntRange(0, 13, options.level);
-	element('farming_level').value = options.level;
+	element('farming_level').set(options.level);
 
 	options.skills.till = validBoolean(options.skills.till);
 	element('check_skillsTill').checked = options.skills.till;
@@ -1292,10 +1297,10 @@ function optionsLoad() {
 	options.skills.agri = validBoolean(options.skills.agri);
 	options.skills.arti = validBoolean(options.skills.arti);
 	const binaryFlags = options.skills.agri + options.skills.arti * 2;
-	element('select_skills').value = binaryFlags;
+	element('select_skills').set(binaryFlags);
 
     options.foragingLevel = validIntRange(0, 13, options.foragingLevel);
-    element('foraging_level').value = options.foragingLevel;
+    element('foraging_level').set(options.foragingLevel);
 
     options.skills.gatherer = validBoolean(options.skills.gatherer);
     element('check_skillsGatherer').checked = options.skills.gatherer;
@@ -1304,7 +1309,7 @@ function optionsLoad() {
     element('check_skillsBotanist').checked = options.skills.botanist;
 
 	options.foodIndex = validIntRange(0, 6, options.foodIndex);
-	element('select_food').value = options.foodIndex;
+	element('select_food').set(options.foodIndex);
 
 	options.extra = validBoolean(options.extra);
 	element('check_extra').checked = options.extra;
