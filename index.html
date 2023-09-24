@@ -41,7 +41,7 @@
 
             <tr id="cross_season_row">
                 <td>Cross season:</td>
-                <td><input type="checkbox" id="cross_season" onChange="refresh()" /></td>
+                <td><sl-checkbox type="checkbox" id="cross_season" sl-change="refresh">Cross season</sl-checkbox></td>
             </tr>
 
             <tr id="number_days_row">
@@ -77,7 +77,7 @@
 
 			<tr>
 				<td>Average profits:</td>
-				<td><input type="checkbox" id="check_average" onChange="refresh()" /></td>
+				<td><sl-checkbox type="checkbox" id="check_average" sl-change="refresh">Average Profits</sl-checkbox></td>
 			</tr>
 
 		</table>
@@ -87,15 +87,15 @@
 			<tr>
 				<td>Seed sources:</td>
 				<td>
-					<input type="checkbox" id="check_seedsPierre" onChange="rebuild()" checked="true" /> <label for="check_seedsPierre">Pierre</label><br />
-					<input type="checkbox" id="check_seedsJoja" onChange="rebuild()" checked="true" /> <label for="check_seedsJoja">Joja</label><br />
-					<input type="checkbox" id="check_seedsSpecial" onChange="rebuild()" checked="true" /> <label for="check_seedsSpecial">Special</label>
+					<sl-checkbox type="checkbox" id="check_seedsPierre" sl-change="rebuild" checked="true">Pierre</sl-checkbox><br />
+					<sl-checkbox type="checkbox" id="check_seedsJoja" sl-change="rebuild" checked="true">Joja</sl-checkbox><br />
+					<sl-checkbox type="checkbox" id="check_seedsSpecial" sl-change="rebuild" checked="true">Special</sl-checkbox>
 				</td>
 			</tr>
 
 			<tr>
 				<td>Pay for seeds:</td>
-				<td><input type="checkbox" id="check_buySeed" onChange="refresh()" /></td>
+				<td><sl-checkbox type="checkbox" id="check_buySeed" sl-change="refresh">Pay for seeds</sl-checkbox></td>
 			</tr>
 
 			<tr>
@@ -115,7 +115,7 @@
 
 			<tr>
 				<td>Pay for fertilizer:</td>
-				<td><input type="checkbox" id="check_buyFert" onChange="refresh()" /></td>
+				<td><sl-checkbox type="checkbox" id="check_buyFert" sl-change="refresh">Pay for fertilizer</sl-checkbox></td>
 			</tr>
 			<tr id = "deluxe_speed_input">
 				<td>Speed-Gro Source:</td>
@@ -139,7 +139,7 @@
                     <table cellspacing="2" class="subt">
                         <tr>
                             <td>Level 5 skill:</td>
-                            <td><input type="checkbox" id="check_skillsTill" onChange="refresh()" /> Tiller<br /></td>
+                            <td><sl-checkbox type="checkbox" id="check_skillsTill" sl-change="refresh">Tiller</sl-checkbox></td>
                         </tr>
                         <tr>
                             <td>Level 10 skill:</td>
@@ -172,11 +172,11 @@
                     <table cellspacing="2" class="subt">
                         <tr>
                             <td>Level 5 skill:</td>
-                            <td><input type="checkbox" id="check_skillsGatherer" onChange="refresh()" /> Gatherer<br /></td>
+                            <td><sl-checkbox type="checkbox" id="check_skillsGatherer" sl-change="refresh">Gatherer</sl-checkbox></td>
                         </tr>
                         <tr>
                             <td>Level 10 skill:</td>
-                            <td><input type="checkbox" id="check_skillsBotanist" onChange="refresh()" /> Botanist<br /></td>
+                            <td><sl-checkbox type="checkbox" id="check_skillsBotanist" sl-change="refresh">Botanist</sl-checkbox></td>
                         </tr>
                     </table>
                 </td>
@@ -199,7 +199,7 @@
 
 			<tr>
 				<td>Show extra info:</td>
-				<td><input type="checkbox" id="check_extra" onChange="refresh()" checked="true" /></td>
+				<td><sl-checkbox type="checkbox" id="check_extra" sl-change="refresh" checked="true">Show extra info</sl-checkbox></td>
 			</tr>
 
 			<tr>
