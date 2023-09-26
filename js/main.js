@@ -1197,14 +1197,15 @@ function element(id) {
  * Called once on startup to draw the UI.
  */
 function initial() {
+	for (const el of document.querySelectorAll('[sl-event]')) {
+		let event = 'sl-' + el.getAttribute('sl-event');
+		let action = el.getAttribute('sl-action');
+		if (action=='refresh') el.addEventListener(event, refresh);
+		if (action=='rebuild') el.addEventListener(event, rebuild);
+	}
 	optionsLoad();
 	updateData();
 	renderGraph();
-	for (const el of document.querySelectorAll('[sl-change]')) {
-		let onchange = el.getAttribute('sl-change');
-		if (onchange=='refresh') el.addEventListener('sl-change', refresh);
-		if (onchange=='rebuild') el.addEventListener('sl-change', rebuild);
-	}
 }
 
 /*
