@@ -1193,15 +1193,24 @@ function setValue(element, valueType, is_select, newValue) {
 	return (element.setAttribute('value', newValue));
 }
 
-function element(id) {
-	const element = document.getElementById(id);
-	const type = element.getAttribute('type');
-	const tag = element.tagName.toLowerCase();
-	const valueType = /(radio|checkbox)/gi.test(type) ? 'checked' : 'value';
-	const is_select = /sl-select/i.test(tag);
+const elements = {};
 
-	element.get =()=> getValue(element, valueType, is_select);
-	element.set =(newValue)=> setValue(element, valueType, is_select, newValue);
+function element(id) {
+	let element = elements[id];
+	
+	if (!elements[id]) {
+		
+		element = document.getElementById(id);
+		const type = element.getAttribute('type');
+		const tag = element.tagName.toLowerCase();
+		const valueType = /(radio|checkbox)/gi.test(type) ? 'checked' : 'value';
+		const is_select = /sl-select/i.test(tag);
+	
+		element.get =()=> getValue(element, valueType, is_select);
+		element.set =(newValue)=> setValue(element, valueType, is_select, newValue);
+
+		elements[id] = element;
+	}
 	return element;
 }
 
