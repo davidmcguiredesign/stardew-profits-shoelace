@@ -17,14 +17,20 @@ body {
     filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#444')";
 }
 
+.glass {
+	border: 1px solid #7773;
+	background-color: #2228;
+	-webkit-backdrop-filter: blur(1rem);
+	backdrop-filter: blur(1rem);
+}
+
 .graph {
 	margin: auto;
 	margin-top: 16px;
-	width: 100%;
+	width: max-content;
 	text-align: center;
-    -webkit-filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.75));
-    -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#444')";
-    filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#444')";
+	border-radius: 1rem;
+	background: #18181888;
 }
 
 .axis {
@@ -40,48 +46,60 @@ body {
 
 .options {
 	margin: auto;
-	margin-top: 8px;
-	margin-bottom: 8px;
+	margin: 1rem;
 	font: 0.875em sans-serif;
 	color: #eeeeee;
-	background-color: #333333;
-	border-radius: 8px;
-	padding: 8px;
-	width: 900px;
-    -webkit-filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.75));
-    -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
-    filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
 	display: flex;
+	gap: 1rem;
+	align-items: start;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 
-.options table {
-	margin: 4px auto;
-	flex-grow: inherit;
+.options .card {
+	--padding: 1rem;
+	border-radius: 1rem;
+	padding: var(--padding);
+	flex-grow: 1;
+	max-width: 20rem;
 }
 
-.options table tr td {
-	padding: 4px;
-	background-color: #222222;
-	border-radius: 4px;
+.options .card > div {
+	padding: 1rem;
+	border-radius: .5rem;
+	margin-block: 1rem;
+	background: #1114;
+	border: 1px solid #7773;
+	min-width: 14rem;
 }
 
-.options table tr .sub {
-    background-color: transparent;
-    padding: 0px;
+.options .card > div:first-of-type {
+	margin-top: 0;
+}
+.options .card > div:last-of-type {
+	margin-bottom: 0;
 }
 
-.options table tr td .subt {
-    background-color: transparent;
-    margin: 0 auto;
-    margin-left: 16px;
-    margin-top: -2px;
-    margin-bottom: -2px;
-    width: -webkit-fill-available;
+.options .card > div > :first-child {
+	margin-top: 0;
 }
 
-.options table tr td .subt td {
-    background-color: #181818;
-    margin: 0px;
+.options :is(sl-input, sl-checkbox, sl-select) {
+	margin-top: 1rem;
+}
+
+.options :is(sl-input, sl-checkbox, sl-select)[disabled] {
+	display: none;
+}
+
+.options sl-checkbox + sl-checkbox {
+	margin-top: 0;
+}
+
+sl-checkbox {
+	display: flex;
+	min-height: 2rem;
+	align-items: center;
 }
 
 #tdhelp {
@@ -113,59 +131,8 @@ body {
 	text-decoration: none;
 }
 
-input[type=number] {
-    -moz-appearance:textfield;
-	width: 64px;
-	background-color: #111111;
-	color: #eeeeee;
-	padding: 2px 2px 2px 4px;
-	border-radius: 3px;
-	border-width: 0px;
-}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    cursor: pointer;
-}
-
-input[type=number]:hover::-webkit-inner-spin-button { 
-    background: url("../img/arrows.png") no-repeat 50% 50%;  
-    width: 14px;
-    height: 14px;
-    padding: 4px;
-    position: relative;
-    right: -4px;
-}
 input:disabled {
     color: #888888;
-}
-
-select {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-    cursor: pointer;
-    background: url("../img/drop.png") no-repeat #111111 right;
-	color: #eeeeee;
-	padding: 2px 16px 2px 4px;
-	border-radius: 3px;
-	border-width: 0px;
-	width: 100%;
-}
-
-select::-ms-expand {
-    display: none;
-}
-
-select:disabled {
-    background: url("../img/drop_dis.png") no-repeat #111111 right;
-	color: #888888;
-}
-
-input[type=checkbox] { 
-    cursor: pointer;
 }
 
 .tooltipTitle {
