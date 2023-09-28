@@ -22,8 +22,7 @@ var options = {
 		"agri": false,
 		"arti": false
 	},
-	"foodIndex": 0,
-	"foodLevel": 0,
+	"food": 0,
 	"extra": false
 };
 
@@ -71,6 +70,37 @@ var fertilizers = [
 		"ratio": 0,
 		"growth": 0.67,
 		"cost": 0
+	}
+];
+
+var foods = [
+	{
+		"name": "None",
+		"level": 0
+	},
+	{
+		"name": "Maple Bar",
+		"level": 1
+	},
+	{
+		"name": "Hashbrowns",
+		"level": 1
+	},
+	{
+		"name": "Complete Breakfast",
+		"level": 2
+	},
+	{
+		"name": "Pepper Poppers",
+		"level": 2
+	},
+	{
+		"name": "Tom Kha Soup",
+		"level": 2
+	},
+	{
+		"name": "Farmer's Lunch",
+		"level": 3
 	}
 ];
 

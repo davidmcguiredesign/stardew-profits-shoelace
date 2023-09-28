@@ -219,7 +219,7 @@ function profit(crop) {
     if (crop.isWildseed)
         useLevel = options.foragingLevel;
 
-	var {ratioN, ratioS, ratioG, ratioI} = levelRatio(fertilizer.ratio, useLevel+options.foodLevel, crop.isWildseed);
+	var {ratioN, ratioS, ratioG, ratioI} = levelRatio(fertilizer.ratio, useLevel+foods[options.food].level, crop.isWildseed);
         
 	if (crop.name == "Tea Leaves") ratioN = 1, ratioS = ratioG = ratioI = 0;
 	var profit = 0;
@@ -1007,16 +1007,16 @@ function updateGraph() {
 
 function updateSeasonNames() {
     if (options.crossSeason) {
-        element('season_0').innerHTML = "Spring & Summer";
-        element('season_1').innerHTML = "Summer & Fall";
-        element('season_2').innerHTML = "Fall & Winter";
-        element('season_3').innerHTML = "Winter & Spring";
+        element('season_0').textContent = "Spring & Summer";
+        element('season_1').textContent = "Summer & Fall";
+        element('season_2').textContent = "Fall & Winter";
+        element('season_3').textContent = "Winter & Spring";
     }
     else {
-        element('season_0').innerHTML = "Spring";
-        element('season_1').innerHTML = "Summer";
-        element('season_2').innerHTML = "Fall";
-        element('season_3').innerHTML = "Winter";
+        element('season_0').textContent = "Spring";
+        element('season_1').textContent = "Summer";
+        element('season_2').textContent = "Fall";
+        element('season_3').textContent = "Winter";
     }
 }
 
@@ -1030,18 +1030,18 @@ function updateSeedChance() {
  */
 function updateData() {
 
-    options.season = parseInt(element('select_season').get());
-    const isGreenhouse = options.season === 4;
+    options.season = element('select_season').get();
+    const isGreenhouse = options.season == 4;
 
-	options.produce = parseInt(element('select_produce').get());
+	options.produce = element('select_produce').get();
 
-	if (element('number_planted').value <= 0)
+	if (element('number_planted').get() <= 0)
 		element('number_planted').set(1);
 	options.planted = element('number_planted').get();
 
 	if (element('max_seed_money').get() < 0)
 		element('max_seed_money').set('0');
-	options.maxSeedMoney = parseInt(element('max_seed_money').get());
+	options.maxSeedMoney = element('max_seed_money').get();
 	if (isNaN(options.maxSeedMoney)) {
 		options.maxSeedMoney = 0;
 	}
@@ -1055,7 +1055,7 @@ function updateData() {
         element('number_days').disabled = true;
         element('cross_season_row').style.display = 'table-row';
 
-        if (element('current_day').value <= 0)
+        if (element('current_day').get() <= 0)
             element('current_day').set(1);
         if (options.crossSeason) {
             element('number_days').set(56);
@@ -1085,17 +1085,17 @@ function updateData() {
 
 	options.buySeed = element('check_buySeed').get();
 
-	options.fertilizer = parseInt(element('select_fertilizer').get());
+	options.fertilizer = element('select_fertilizer').get();
 
 	options.buyFert = element('check_buyFert').get();
 	
-	options.fertilizerSource = parseInt(element('speed_gro_source').get());
+	options.fertilizerSource = element('speed_gro_source').get();
 
 	if (element('farming_level').value <= 0)
 		element('farming_level').set(1);
 	if (element('farming_level').get() > 13)
 		element('farming_level').set(13);
-	options.level = parseInt(element('farming_level').get());
+	options.level = element('farming_level').get();
 
 	if (options.level >= 5) {
 		element('check_skillsTill').disabled = false;
@@ -1134,7 +1134,7 @@ function updateData() {
         element('foraging_level').set(1);
     if (element('foraging_level').get() > 13)
         element('foraging_level').set(13);
-    options.foragingLevel = parseInt(element('foraging_level').get());
+    options.foragingLevel = element('foraging_level').get();
 
     if (options.foragingLevel >= 5) {
         element('check_skillsGatherer').disabled = false;
@@ -1158,8 +1158,7 @@ function updateData() {
         element('check_skillsBotanist').checked = false;
     }
 
-	options.foodIndex = element('select_food').get();
-	options.foodLevel = parseInt(element('select_food').options[options.foodIndex].value);
+	options.food = element('select_food').get();
 	if (options.buyFert && options.fertilizer == 4)
 		element('speed_gro_source').disabled = false;
 	else
@@ -1177,19 +1176,32 @@ function updateData() {
 	sortCrops();
 }
 
+function getValue(element, valueType, is_select) {
+	let value = element[valueType];
+	if (is_select) {
+		if (Array.isArray(value)) value = value[0];
+		value = value - 1;
+	}
+	return value;
+}
+
+function setValue(element, valueType, is_select, newValue) {
+	if (valueType=='checked') {
+		return (element.setAttribute('checked', !!newValue));
+	}
+	if (is_select) newValue = parseInt(newValue) + 1;
+	return (element.setAttribute('value', newValue));
+}
+
 function element(id) {
 	const element = document.getElementById(id);
-	let type = element.getAttribute('type');
-	let valueType = (type=='checkbox' || type=='radio') ? 'checked' : 'value';
-	function getValue(element, valueType) {
-		return element[valueType];
-	}
-	function setValue(element, valueType, newValue) {
-		if (valueType=='checked') element.checked = !!newValue;
-		element.value = newValue;
-	}
-	element.get =()=> getValue(element, valueType);
-	element.set =(newValue)=> setValue(element, valueType, newValue);
+	const type = element.getAttribute('type');
+	const tag = element.tagName.toLowerCase();
+	const valueType = /(radio|checkbox)/gi.test(type) ? 'checked' : 'value';
+	const is_select = /sl-select/i.test(tag);
+
+	element.get =()=> getValue(element, valueType, is_select);
+	element.set =(newValue)=> setValue(element, valueType, is_select, newValue);
 	return element;
 }
 
@@ -1314,8 +1326,8 @@ function optionsLoad() {
     options.skills.botanist = validBoolean(options.skills.botanist);
     element('check_skillsBotanist').checked = options.skills.botanist;
 
-	options.foodIndex = validIntRange(0, 6, options.foodIndex);
-	element('select_food').set(options.foodIndex);
+	options.food = validIntRange(0, 6, options.food);
+	element('select_food').set(options.food);
 
 	options.extra = validBoolean(options.extra);
 	element('check_extra').checked = options.extra;
@@ -1363,7 +1375,15 @@ function rebuild() {
 	renderGraph();
 }
 
-document.addEventListener('DOMContentLoaded', initial);
+document.addEventListener('DOMContentLoaded', async function() {
+	const promises = [
+		customElements.whenDefined('sl-select'),
+		customElements.whenDefined('sl-checkbox'),
+		customElements.whenDefined('sl-input'),
+	];
+	await Promise.allSettled(promises);
+	initial();
+});
 document.addEventListener('click', function (event) {
 	if (event.target.id === 'reset') window.location = 'index.html';
 });

@@ -29,13 +29,13 @@
 			<tr>
 				<td>Season:</td>
 				<td>
-					<select id="select_season" onChange="rebuild()">
-						<option value="0" id="season_0" selected="true">Spring</option>
-						<option value="1" id="season_1">Summer</option>
-						<option value="2" id="season_2">Fall</option>
-						<option value="3" id="season_3">Winter</option>
-						<option value="4" id="season_4">Greenhouse</option>
-					</select>
+					<sl-select id="select_season" value="1" sl-event="change" sl-action="rebuild">
+						<sl-option value="1" id="season_0">Spring</sl-option>
+						<sl-option value="2" id="season_1">Summer</sl-option>
+						<sl-option value="3" id="season_2">Fall</sl-option>
+						<sl-option value="4" id="season_3">Winter</sl-option>
+						<sl-option value="5" id="season_4">Greenhouse</sl-option>
+					</sl-select>
 				</td>
 			</tr>
 
@@ -57,11 +57,11 @@
 			<tr>
 				<td>Produce type:</td>
 				<td>
-					<select id="select_produce" onChange="refresh()">
-						<option value="0" selected="true">Raw</option>
-						<option value="1">Jar</option>
-						<option value="2">Keg</option>
-					</select>
+					<sl-select id="select_produce" value="1" sl-event="change" sl-action="refresh">
+						<sl-option value="1">Raw</sl-option>
+						<sl-option value="2">Jar</sl-option>
+						<sl-option value="3">Keg</sl-option>
+					</sl-select>
 				</td>
 			</tr>
 
@@ -101,15 +101,15 @@
 			<tr>
 				<td>Fertilizer:</td>
 				<td>
-					<select id="select_fertilizer" onChange="refresh()">
-						<option value="0" selected="true">None</option>
-						<option value="1">Basic Fertilizer</option>
-						<option value="2">Quality Fertilizer</option>
-						<option value="5">Deluxe Fertilizer</option>
-						<option value="3">Speed-Gro</option>
-						<option value="4">Deluxe Speed-Gro</option>
-						<option value="6">Hyper Speed-Gro</option>
-					</select>
+					<sl-select id="select_fertilizer" value="1" sl-event="change" sl-action="refresh">
+						<sl-option value="1">None</sl-option>
+						<sl-option value="2">Basic Fertilizer</sl-option>
+						<sl-option value="3">Quality Fertilizer</sl-option>
+						<sl-option value="4">Deluxe Fertilizer</sl-option>
+						<sl-option value="5">Speed-Gro</sl-option>
+						<sl-option value="6">Deluxe Speed-Gro</sl-option>
+						<sl-option value="7">Hyper Speed-Gro</sl-option>
+					</sl-select>
 				</td>
 			</tr>
 
@@ -117,12 +117,13 @@
 				<td>Pay for fertilizer:</td>
 				<td><sl-checkbox type="checkbox" id="check_buyFert" sl-event="change" sl-action="refresh">Pay for fertilizer</sl-checkbox></td>
 			</tr>
-			<tr id = "deluxe_speed_input">
+			<tr id="deluxe_speed_input">
 				<td>Speed-Gro Source:</td>
 				<td>
-					<select id="speed_gro_source" onChange="refresh()">
-						<option value="0" selected="true">Pierre</option>
-						<option value="1">Sandy</option>
+					<sl-select id="speed_gro_source" value="1" sl-event="change" sl-action="refresh">
+						<sl-option value="1">Pierre</sl-option>
+						<sl-option value="2">Sandy</sl-option>
+					</sl-select>
 				</td>
 			</tr>
 		</table>
@@ -144,11 +145,11 @@
                         <tr>
                             <td>Level 10 skill:</td>
                             <td >
-                                <select id="select_skills" onChange="refresh()">
-                                    <option value="0" selected="true">None</option>
-                                    <option value="1">Agriculturist</option>
-                                    <option value="2">Artisan</option>
-                                </select>
+                                <sl-select id="select_skills" value="1" sl-event="change" sl-action="refresh">
+                                    <sl-option value="1">None</sl-option>
+                                    <sl-option value="2">Agriculturist</sl-option>
+                                    <sl-option value="3">Artisan</sl-option>
+                                </sl-select>
                             </td>
                         </tr>
                     </table>
@@ -185,15 +186,15 @@
 			<tr>
 				<td>Farming buff food:</td>
 				<td>
-					<select id="select_food" onChange="refresh()">
-						<option value="0" selected="true">None</option>
-						<option value="1">Maple Bar</option>
-						<option value="1">Hashbrowns</option>
-						<option value="2">Complete Breakfast</option>
-						<option value="2">Pepper Poppers</option>
-						<option value="2">Tom Kha Soup</option>
-						<option value="3">Farmer's Lunch</option>
-					</select>
+					<sl-select id="select_food" value="1" sl-event="change" sl-action="refresh">
+						<sl-option value="1">None</sl-option>
+						<sl-option value="2">Maple Bar</sl-option>
+						<sl-option value="3">Hashbrowns</sl-option>
+						<sl-option value="4">Complete Breakfast</sl-option>
+						<sl-option value="5">Pepper Poppers</sl-option>
+						<sl-option value="6">Tom Kha Soup</sl-option>
+						<sl-option value="7">Farmer's Lunch</sl-option>
+					</sl-select>
 				</td>
 			</tr>
 
