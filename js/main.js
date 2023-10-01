@@ -1347,13 +1347,13 @@ function optionsLoad() {
 }
 
 function deserialize(str) {
-    var json = `(${str})`
-        .replace(/_/g, ' ')
-        .replace(/-/g, ',')
-        .replace(/\(/g, '{')
-        .replace(/\)/g, '}')
-        .replace(/([a-z]+)/gi, '"$1":')
-        .replace(/"(true|false)":/gi, '$1');
+	var json = `(${str})`
+		.replaceAll('_', ':')
+		.replaceAll('-', ',')
+		.replaceAll('(', '{')
+		.replaceAll(')', '}')
+		.replace(/([a-z]+)/gi, '"$1"')
+		.replace(/"(true|false)"/gi, '$1');
 
     //console.log(json);
 
