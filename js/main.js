@@ -1189,7 +1189,8 @@ function getValue(element, valueType, is_select) {
 
 function setValue(element, valueType, is_select, newValue) {
 	if (valueType=='checked') {
-		return (element.setAttribute('checked', !!newValue));
+		if (newValue) element.setAttribute('checked', newValue);
+		else element.removeAttribute('checked');
 	}
 	if (is_select) newValue = parseInt(newValue) + 1;
 	return (element.setAttribute('value', newValue));
@@ -1361,8 +1362,8 @@ function deserialize(str) {
 		.replaceAll('-', ',')
 		.replaceAll('(', '{')
 		.replaceAll(')', '}')
-		.replace(/([a-z]+)/gi, '"$1"')
-		.replace(/"(true|false)"/gi, '$1');
+		.replaceAll(/([a-z]+)/gi, '"$1"')
+		.replaceAll(/"(true|false)"/gi, '$1');
 
     //console.log(json);
 
