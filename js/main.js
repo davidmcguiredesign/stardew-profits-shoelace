@@ -1084,6 +1084,8 @@ function updateData() {
 	options.seeds.special = element('check_seedsSpecial').get();
 
 	options.buySeed = element('check_buySeed').get();
+	if (options.buySeed == false) element('max_seed_money').setAttribute('disabled', true)
+	else element('max_seed_money').removeAttribute('disabled');
 
 	options.fertilizer = element('select_fertilizer').get();
 
