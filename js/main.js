@@ -1119,11 +1119,11 @@ function updateData() {
 		element('select_skills').style.cursor = "default";
 		element('select_skills').set(0);
 	}
-	if (element('select_skills').value == 1) {
+	if (element('select_skills').get() == 1) {
 		options.skills.agri = true;
 		options.skills.arti = false;
 	}
-	else if (element('select_skills').value == 2) {
+	else if (element('select_skills').get() == 2) {
 		options.skills.agri = false;
 		options.skills.arti = true;
 	}
@@ -1132,7 +1132,7 @@ function updateData() {
 		options.skills.arti = false;
 	}
 
-    if (element('foraging_level').value <= 0)
+    if (element('foraging_level').get() <= 0)
         element('foraging_level').set(1);
     if (element('foraging_level').get() > 13)
         element('foraging_level').set(13);
