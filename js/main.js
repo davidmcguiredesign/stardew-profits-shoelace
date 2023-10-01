@@ -1219,13 +1219,22 @@ function element(id) {
 /*
  * Called once on startup to draw the UI.
  */
-function initial() {
+async function initial() {
+	const promises = [
+		customElements.whenDefined('sl-select'),
+		customElements.whenDefined('sl-checkbox'),
+		customElements.whenDefined('sl-input'),
+	];
+
+	await Promise.allSettled(promises);
+
 	for (const el of document.querySelectorAll('[sl-event]')) {
 		let event = 'sl-' + el.getAttribute('sl-event');
 		let action = el.getAttribute('sl-action');
 		if (action=='refresh') el.addEventListener(event, refresh);
 		if (action=='rebuild') el.addEventListener(event, rebuild);
 	}
+
 	optionsLoad();
 	updateData();
 	renderGraph();
@@ -1386,13 +1395,7 @@ function rebuild() {
 	renderGraph();
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
-	const promises = [
-		customElements.whenDefined('sl-select'),
-		customElements.whenDefined('sl-checkbox'),
-		customElements.whenDefined('sl-input'),
-	];
-	await Promise.allSettled(promises);
+document.addEventListener('DOMContentLoaded', function() {
 	initial();
 });
 document.addEventListener('click', function (event) {
