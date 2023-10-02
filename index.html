@@ -11,6 +11,7 @@
 		<link rel="shortcut icon" type="image/png" href="img/ancientfruit.png">
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/cdn/themes/dark.css" />
 		<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/cdn/shoelace-autoloader.js"></script>
+		<link rel="stylesheet" href="style/shoelace.css">
 
 	</head>
 	<body>
@@ -23,55 +24,47 @@
 		<script src="js/crops.js"> </script>
 		<script src="js/data.js"> </script>
 		<div class="graph-scroll-container">
-			<div class="graph glass">
+			<div class="graph glass card">
 				<script src="js/main.js"> </script>
 			</div>
 		</div>
 
-		<form id="options" class="options">
-		<div class="card glass">
+		<form id="options" class="options card glass">
+			<div class="card">
+				<sl-select label="Season" id="select_season" value="1" sl-event="change" sl-action="rebuild">
+					<sl-option value="1" id="season_0">Spring</sl-option>
+					<sl-option value="2" id="season_1">Summer</sl-option>
+					<sl-option value="3" id="season_2">Fall</sl-option>
+					<sl-option value="4" id="season_3">Winter</sl-option>
+					<sl-option value="5" id="season_4">Greenhouse</sl-option>
+				</sl-select>
 
-				<div>
-					<sl-select label="Season" id="select_season" value="1" sl-event="change" sl-action="rebuild">
-						<sl-option value="1" id="season_0">Spring</sl-option>
-						<sl-option value="2" id="season_1">Summer</sl-option>
-						<sl-option value="3" id="season_2">Fall</sl-option>
-						<sl-option value="4" id="season_3">Winter</sl-option>
-						<sl-option value="5" id="season_4">Greenhouse</sl-option>
-					</sl-select>
+				<sl-checkbox type="checkbox" id="cross_season" sl-event="change" sl-action="refresh">Cross season</sl-checkbox>
+				<sl-input label="Number of days" type="number" id="number_days" value="28" sl-event="change" sl-action="refresh"></sl-input>
+				<sl-input label="Current day" type="number" id="current_day" value="1" sl-event="input" sl-action="refresh"></sl-input>
 
-					<sl-checkbox type="checkbox" id="cross_season" sl-event="change" sl-action="refresh">Cross season</sl-checkbox>
-					<sl-input label="Number of days" type="number" id="number_days" value="28" sl-event="change" sl-action="refresh"></sl-input>
-					<sl-input label="Current day" type="number" id="current_day" value="1" sl-event="input" sl-action="refresh"></sl-input>
-				</div>
+				<sl-select label="Produce type" id="select_produce" value="1" sl-event="change" sl-action="refresh">
+					<sl-option value="1">Raw</sl-option>
+					<sl-option value="2">Jar</sl-option>
+					<sl-option value="3">Keg</sl-option>
+				</sl-select>
 
-				<div>
-					<sl-select label="Produce type" id="select_produce" value="1" sl-event="change" sl-action="refresh">
-						<sl-option value="1">Raw</sl-option>
-						<sl-option value="2">Jar</sl-option>
-						<sl-option value="3">Keg</sl-option>
-					</sl-select>
+				<sl-input label="Number of crops" type="number" id="number_planted" value="1" sl-event="input" sl-action="refresh"></sl-input>
 
-					<sl-input label="Number of crops" type="number" id="number_planted" value="1" sl-event="input" sl-action="refresh"></sl-input>
-				</div>
+			</div>
 
-		</div>
-
-		<div class="card glass">
-
-			<div>
-				<h3>Seeds</h3>
-				<sl-checkbox type="checkbox" id="check_seedsPierre" sl-event="change" sl-action="rebuild" checked="true">Pierre</sl-checkbox>
-				<sl-checkbox type="checkbox" id="check_seedsJoja" sl-event="change" sl-action="rebuild" checked="true">Joja</sl-checkbox>
-				<sl-checkbox type="checkbox" id="check_seedsSpecial" sl-event="change" sl-action="rebuild" checked="true">Special</sl-checkbox>
+			<div class="card">
+				<sl-checkbox type="checkbox" id="check_seedsPierre" sl-event="change" sl-action="rebuild" checked="true">Seeds from Pierre</sl-checkbox>
+				<sl-checkbox type="checkbox" id="check_seedsJoja" sl-event="change" sl-action="rebuild" checked="true">Seeds from Joja</sl-checkbox>
+				<sl-checkbox type="checkbox" id="check_seedsSpecial" sl-event="change" sl-action="rebuild" checked="true">Seeds from Special</sl-checkbox>
 				<br>
 
 				<sl-checkbox type="checkbox" id="check_buySeed" sl-event="change" sl-action="refresh">Pay for seeds</sl-checkbox>
 				<sl-input label="Max seed money" type="number" id="max_seed_money" value="0" sl-event="input" sl-action="refresh"></sl-input>
+
 			</div>
 
-			<div>
-				<h3>Fertilizer</h3>
+			<div class="card">
 				<sl-select label="Fertilizer" id="select_fertilizer" value="1" sl-event="change" sl-action="refresh">
 					<sl-option value="1">None</sl-option>
 					<sl-option value="2">Basic Fertilizer</sl-option>
@@ -88,11 +81,8 @@
 					<sl-option value="2">Sandy</sl-option>
 				</sl-select>
 			</div>
-		</div>
 
-		<div class="card glass">
-
-			<div>
+			<div class="card">
 				<sl-input label="Farming level" type="number" id="farming_level" value="0" sl-event="change" sl-action="refresh"></sl-input>
 
 				<sl-checkbox type="checkbox" id="check_skillsTill" sl-event="change" sl-action="refresh">Tiller (Level 5 skill)</sl-checkbox>
@@ -101,17 +91,11 @@
 					<sl-option value="2">Agriculturist</sl-option>
 					<sl-option value="3">Artisan</sl-option>
 				</sl-select>
-			</div>
 
-			<div>
 				<sl-input label="Foraging level" type="number" id="foraging_level" value="0" sl-event="change" sl-action="refresh"></sl-input>
-
 				<sl-checkbox type="checkbox" id="check_skillsGatherer" sl-event="change" sl-action="refresh">Gatherer (Level 5 skill)</sl-checkbox>
-
 				<sl-checkbox type="checkbox" id="check_skillsBotanist" sl-event="change" sl-action="refresh">Botanist (Level 10 skill)</sl-checkbox>
-			</div>
 
-			<div>
 				<sl-select label="Farming buff food" id="select_food" value="1" sl-event="change" sl-action="refresh">
 					<sl-option value="1">None</sl-option>
 					<sl-option value="2">Maple Bar</sl-option>
@@ -121,19 +105,17 @@
 					<sl-option value="6">Tom Kha Soup</sl-option>
 					<sl-option value="7">Farmer's Lunch</sl-option>
 				</sl-select>
-			</div>
 
-			<div>
+			</div>
+			<div class="card">
+
 				<sl-checkbox type="checkbox" id="check_average" sl-event="change" sl-action="refresh">Average Profits</sl-checkbox>
 				<sl-checkbox type="checkbox" id="check_extra" sl-event="change" sl-action="refresh" checked="true">Show extra info</sl-checkbox>
-			</div>
 
-			<div>
 				<a class="button" href="help.html">Help</a>
 				<a class="button" href="#" id="reset">Reset</a>
-			</div>
 
-		</div>
+			</div>
 
 		</form>
 

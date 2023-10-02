@@ -1,3 +1,13 @@
+:root {
+	--color-glass-100: #fff3;
+	--color-glass-800: #1116;
+	--color-glass-900: #0004;
+	--color-glass-1000: #0008;
+	--line: 0.5px;
+
+	--color-glass-line: hsla(184, 80%, 70%, 33%);
+}
+
 body {
 	background: #000000 no-repeat center top fixed;
 	-webkit-background-size: cover;
@@ -25,9 +35,9 @@ body {
 }
 
 .glass {
-	border: 1px solid #fff2;
-	background-color: #1118;
-	-webkit-backdrop-filter: blur(1rem);
+	border: var(--line) solid var(--color-glass-line);
+	background-color: var(--color-glass-900);
+	-webkit-backdrop-filter: blur(9px);
 	backdrop-filter: blur(9px);
 }
 
@@ -42,8 +52,6 @@ body {
 	margin: auto;
 	width: max-content;
 	text-align: center;
-	border-radius: 1rem;
-	background: #18181888;
 }
 
 .axis {
@@ -69,50 +77,29 @@ body {
 	flex-wrap: wrap;
 }
 
-.options .card {
-	--padding: 1rem;
-	border-radius: 1rem;
-	padding: var(--padding);
-	flex-grow: 1;
-	max-width: 20rem;
-}
-
-.options .card > div {
+.card {
 	padding: 1rem;
 	border-radius: .5rem;
-	margin-block: 1rem;
-	background: #0003;
-	border: 1px solid #fff2;
+	background: var(--color-glass-800);
+	border: var(--line) solid var(--color-glass-line);
 	min-width: 14rem;
+	flex: 1;
 }
 
-.options .card > div:first-of-type {
-	margin-top: 0;
-}
-.options .card > div:last-of-type {
-	margin-bottom: 0;
-}
-
-.options .card > div > :first-child {
+.options div > :first-child {
 	margin-top: 0;
 }
 
-.options :is(sl-input, sl-checkbox, sl-select) {
+:is(sl-input, sl-checkbox, sl-select) {
 	margin-top: 1rem;
 }
 
-.options :is(sl-input, sl-checkbox, sl-select)[disabled] {
+:is(sl-input, sl-checkbox, sl-select)[disabled] {
 	display: none;
 }
 
-.options sl-checkbox + sl-checkbox {
+sl-checkbox + sl-checkbox {
 	margin-top: 0;
-}
-
-sl-checkbox {
-	display: flex;
-	min-height: 2rem;
-	align-items: center;
 }
 
 #tdhelp {
