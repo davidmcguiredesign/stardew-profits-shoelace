@@ -474,6 +474,11 @@ sl-input::part(input) {
 	background-color: transparent;
 }
 
+sl-select::part(listbox) {
+  background: #222e;
+  backdrop-filter: blur(5px);
+}
+
 sl-select:hover::part(combobox) {
 	border-color: var(--sl-input-border-color-hover);
 }
@@ -558,7 +563,7 @@ sl-input::part(form-control-input)::before {
 	border-radius: inherit;
 	outline: var(--focus-ring-color) solid var(--focus-ring-width);
 	z-index: -1;
-	opacity: .4;
+	opacity: .5;
 }
 
 /* exceptions */

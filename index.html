@@ -29,8 +29,8 @@
 			</div>
 		</div>
 
-		<form id="options" class="options card glass">
-			<div class="card">
+		<form id="options" class="options">
+			<div class="card glass r-4">
 				<sl-select label="Season" id="select_season" value="1" sl-event="change" sl-action="rebuild">
 					<sl-option value="1" id="season_0">Spring</sl-option>
 					<sl-option value="2" id="season_1">Summer</sl-option>
@@ -53,7 +53,7 @@
 
 			</div>
 
-			<div class="card">
+			<div class="card glass r-3">
 				<sl-checkbox type="checkbox" id="check_seedsPierre" sl-event="change" sl-action="rebuild" checked="true">Seeds from Pierre</sl-checkbox>
 				<sl-checkbox type="checkbox" id="check_seedsJoja" sl-event="change" sl-action="rebuild" checked="true">Seeds from Joja</sl-checkbox>
 				<sl-checkbox type="checkbox" id="check_seedsSpecial" sl-event="change" sl-action="rebuild" checked="true">Seeds from Special</sl-checkbox>
@@ -64,7 +64,7 @@
 
 			</div>
 
-			<div class="card">
+			<div class="card glass r-1">
 				<sl-select label="Fertilizer" id="select_fertilizer" value="1" sl-event="change" sl-action="refresh">
 					<sl-option value="1">None</sl-option>
 					<sl-option value="2">Basic Fertilizer</sl-option>
@@ -82,7 +82,7 @@
 				</sl-select>
 			</div>
 
-			<div class="card">
+			<div class="card glass r-2">
 				<sl-input label="Farming level" type="number" id="farming_level" value="0" sl-event="change" sl-action="refresh"></sl-input>
 
 				<sl-checkbox type="checkbox" id="check_skillsTill" sl-event="change" sl-action="refresh">Tiller (Level 5 skill)</sl-checkbox>
@@ -107,7 +107,7 @@
 				</sl-select>
 
 			</div>
-			<div class="card">
+			<div class="card glass">
 
 				<sl-checkbox type="checkbox" id="check_average" sl-event="change" sl-action="refresh">Average Profits</sl-checkbox>
 				<sl-checkbox type="checkbox" id="check_extra" sl-event="change" sl-action="refresh" checked="true">Show extra info</sl-checkbox>
