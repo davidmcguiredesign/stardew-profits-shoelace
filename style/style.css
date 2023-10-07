@@ -84,6 +84,11 @@ body {
 	border: var(--line) solid var(--color-glass-line);
 	min-width: 14rem;
 	flex: 1;
+	position: relative;
+}
+
+.card:focus-within {
+	z-index: 1000;
 }
 
 .options div > :first-child {
