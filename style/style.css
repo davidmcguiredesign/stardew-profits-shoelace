@@ -1,11 +1,24 @@
 :root {
-	--color-glass-100: #fff3;
-	--color-glass-800: #1116;
-	--color-glass-900: #0004;
-	--color-glass-1000: #0008;
-	--line: 0.5px;
+	--hue: 30;
+	--saturation: 30%;
+	--surface-0: 60%;
+	--surface-1: 50%;
+	--darken: 0.5;
+	--lighten: 1.5;
+	--line: 1.5px;
+	--depth: 2.5px;
+	--text: #fff;
+}
 
-	--color-glass-line: hsla(184, 80%, 70%, 33%);
+body[style*='night'],
+:root:has(body[style*='night']) {
+	--hue: 230 !important;
+	--saturation: 20%;
+	--surface-0: 18%;
+	--surface-1: 30%;
+	--darken: 0.3;
+	--lighten: 1.5;
+	--text: hsl(var(--hue), 50%, 80%);
 }
 
 body {
@@ -18,6 +31,30 @@ body {
 	overflow-x: hidden;
 	margin: 0;
 	padding: 1rem;
+}
+
+.card {
+	padding: 1rem;
+	border-radius: .5rem;
+	background: linear-gradient(to bottom,
+		hsl(var(--hue), var(--saturation), calc(var(--surface-0) + 0%)),
+		30%,
+		hsl(var(--hue), calc(var(--saturation) * 1.3), calc(var(--surface-0) * 0.7))
+	);
+	border-width: var(--line);
+	border-style: solid;
+	border-color: hsl(var(--hue), var(--saturation), calc(var(--surface-0) * var(--darken)));
+	border-top-color: hsl(var(--hue), var(--saturation), calc(var(--surface-0) * var(--lighten)));
+	border-top-width: calc(var(--line) * .5);
+	border-bottom-color: hsl(var(--hue), var(--saturation), calc(var(--surface-0) * var(--darken)));
+	box-shadow: 0 var(--depth) 0 hsl(var(--hue), var(--saturation), calc(var(--surface-0) * var(--darken)));
+	min-width: 14rem;
+	flex: 1;
+	position: relative;
+}
+
+.card:focus-within {
+	z-index: 1000;
 }
 
 .title {
@@ -34,13 +71,6 @@ body {
 	display: inline-block;
 }
 
-.glass {
-	border: var(--line) solid var(--color-glass-line);
-	background-color: var(--color-glass-900);
-	-webkit-backdrop-filter: blur(9px);
-	backdrop-filter: blur(9px);
-}
-
 .graph-scroll-container {
 	width: 100%;
 	overflow-x: scroll;
@@ -52,6 +82,7 @@ body {
 	margin: auto;
 	width: max-content;
 	text-align: center;
+	padding: 0;
 }
 
 .axis {
@@ -69,7 +100,7 @@ body {
 	margin: auto;
 	margin-block: 1rem;
 	font: 0.875em sans-serif;
-	color: #eeeeee;
+	color: var(--text);
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
 	grid-auto-flow: dense;
@@ -77,20 +108,6 @@ body {
 	align-items: start;
 	justify-content: center;
 	flex-wrap: wrap;
-}
-
-.card {
-	padding: 1rem;
-	border-radius: .5rem;
-	background: var(--color-glass-1000);
-	border: var(--line) solid var(--color-glass-line);
-	min-width: 14rem;
-	flex: 1;
-	position: relative;
-}
-
-.card:focus-within {
-	z-index: 1000;
 }
 
 .options .r-1 { grid-row: span 1; }
@@ -227,23 +244,22 @@ input:disabled {
 }
 
 .footer p {
-	color: #eeeeee;
 	font: 0.875em sans-serif;
 	opacity: 0.75;
 }
 
 .footer a {
-	color: #eeeeee;
+	color: inherit;
 	text-decoration: none;
 }
 
 .footer a:hover {
-	color: #eeeeee;
+	color: inherit;
 	text-decoration: underline;
 }
 
 .footer a:visited {
-	color: #eeeeee;
+	color: inherit;
 	text-decoration: none;
 }
 

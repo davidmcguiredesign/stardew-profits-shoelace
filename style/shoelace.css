@@ -282,7 +282,7 @@
   /* --sl-color-neutral-1000: hsl(0, 0%, 100%); */
 
   /* --sl-border-radius-small: 0.1875rem; */
-  /* --sl-border-radius-medium: 0.25rem; */
+  --sl-border-radius-medium: 3px;
   /* --sl-border-radius-large: 0.5rem; */
   /* --sl-border-radius-x-large: 1rem; */
 
@@ -360,21 +360,21 @@
   /* --sl-input-height-medium: 2.5rem; */
   /* --sl-input-height-large: 3.125rem; */
 
-  --sl-input-background-color: var(--color-glass-1000);
+  --sl-input-background-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1)));
   /* --sl-input-background-color-hover: var(--sl-input-background-color); */
   /* --sl-input-background-color-focus: var(--sl-input-background-color); */
   /* --sl-input-background-color-disabled: var(--sl-color-neutral-100); */
-  --sl-input-border-color: var(--sl-color-neutral-0);
+  --sl-input-border-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--darken)));
   --sl-input-border-color-hover: var(--sl-input-border-color-focus);
   /* --sl-input-border-color-focus: var(--sl-color-primary-500); */
   /* --sl-input-border-color-disabled: var(--sl-color-neutral-300); */
-  /* --sl-input-border-width: 1px; */
+  --sl-input-border-width: var(--line);
   /* --sl-input-required-content: "*"; */
   /* --sl-input-required-content-offset: -2px; */
   /* --sl-input-required-content-color: var(--sl-input-label-color); */
 
   /* --sl-input-border-radius-small: var(--sl-border-radius-medium); */
-  /* --sl-input-border-radius-medium: var(--sl-border-radius-medium); */
+  --sl-input-border-radius-medium: var(--sl-border-radius-medium);
   /* --sl-input-border-radius-large: var(--sl-border-radius-medium); */
 
   /* --sl-input-font-family: var(--sl-font-sans); */
@@ -384,7 +384,7 @@
   /* --sl-input-font-size-large: var(--sl-font-size-large); */
   /* --sl-input-letter-spacing: var(--sl-letter-spacing-normal); */
 
-  /* --sl-input-color: var(--sl-color-neutral-700); */
+  --sl-input-color: var(--text);
   /* --sl-input-color-hover: var(--sl-color-neutral-700); */
   /* --sl-input-color-focus: var(--sl-color-neutral-700); */
   /* --sl-input-color-disabled: var(--sl-color-neutral-900); */
@@ -425,9 +425,9 @@
 
   /* --sl-overlay-background-color: hsl(0 0% 0% / 43%); */
 
-  /* --sl-panel-background-color: var(--sl-color-neutral-50); */
-  /* --sl-panel-border-color: var(--sl-color-neutral-200); */
-  /* --sl-panel-border-width: 1px; */
+  --sl-panel-background-color: var(--sl-input-background-color);
+  --sl-panel-border-color: var(--sl-input-border-color);
+  --sl-panel-border-width: var(--sl-input-border-width);
 
   /* --sl-tooltip-border-radius: var(--sl-border-radius-medium); */
   /* --sl-tooltip-background-color: var(--sl-color-neutral-800); */
@@ -470,13 +470,26 @@
 /* box-shadow: var(--sl-shadow-large) */
 }
 
+sl-input::part(base) {
+  border-bottom-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--lighten)));
+}
+
 sl-input::part(input) {
-	background-color: transparent;
+  box-shadow: inset 0 var(--depth) 0 hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--darken)));
 }
 
 sl-select::part(listbox) {
-  background: #222e;
-  backdrop-filter: blur(5px);
+  /* background: var(--surface-1); */
+  /* backdrop-filter: blur(5px); */
+}
+
+sl-select::part(combobox) {
+  border-top-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--lighten)));
+}
+
+sl-select::part(form-control-input) {
+  border-bottom-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--darken)));
+  box-shadow: 0 var(--depth) 0 hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--darken)));
 }
 
 sl-select:hover::part(combobox) {
