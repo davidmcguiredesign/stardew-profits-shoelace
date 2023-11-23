@@ -14,14 +14,8 @@ function styleByTime() {
 
 	if (temp != current) {
 		// console.log("Switching time to " + temp + "!");
-		if (temp == "day") {
-			d3.select("body").style("background-image", "url(\"img/bg_day.png\")");
-			current = "day";
-		}
-		else if (temp == "night") {
-			d3.select("body").style("background-image", "url(\"img/bg_night.png\")");
-			current = "night";
-		}
+		d3.select(".background").style("background-image", `url("img/bg_${temp}.png")`);
+		current = temp;
 	}
 
 	setTimeout(styleByTime, 1000);
