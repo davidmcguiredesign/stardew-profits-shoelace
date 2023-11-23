@@ -360,7 +360,7 @@
   /* --sl-input-height-medium: 2.5rem; */
   /* --sl-input-height-large: 3.125rem; */
 
-  --sl-input-background-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1)));
+  --sl-input-background-color: hsl(38, 90%, 45%);
   /* --sl-input-background-color-hover: var(--sl-input-background-color); */
   /* --sl-input-background-color-focus: var(--sl-input-background-color); */
   /* --sl-input-background-color-disabled: var(--sl-color-neutral-100); */
@@ -385,7 +385,7 @@
   /* --sl-input-letter-spacing: var(--sl-letter-spacing-normal); */
 
   --sl-input-color: var(--text);
-  /* --sl-input-color-hover: var(--sl-color-neutral-700); */
+  --sl-input-color-hover: var(--sl-input-color);
   /* --sl-input-color-focus: var(--sl-color-neutral-700); */
   /* --sl-input-color-disabled: var(--sl-color-neutral-900); */
   /* --sl-input-icon-color: var(--sl-color-neutral-500); */
@@ -470,23 +470,31 @@
 /* box-shadow: var(--sl-shadow-large) */
 }
 
+/* DM STYLES */
+
+sl-button.square {
+  width: var(--sl-input-height-medium);
+}
+
+sl-button::part(base) {
+  /* background: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * 1)); */
+}
+
 sl-input::part(base) {
   border-bottom-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--lighten)));
 }
 
 sl-input::part(input) {
   box-shadow: inset 0 var(--depth) 0 hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--darken)));
+  width: 100%;
 }
 
-sl-select::part(listbox) {
-  /* background: var(--surface-1); */
-  /* backdrop-filter: blur(5px); */
-}
-
+sl-button::part(base),
 sl-select::part(combobox) {
   border-top-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--lighten)));
 }
 
+sl-button::part(base),
 sl-select::part(form-control-input) {
   border-bottom-color: hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--darken)));
   box-shadow: 0 var(--depth) 0 hsl(var(--hue), var(--saturation), calc(var(--surface-1) * var(--darken)));
@@ -498,6 +506,10 @@ sl-select:hover::part(combobox) {
 
 :is(sl-select, sl-input)::part(form-control-label) {
 	margin-bottom: var(--sl-spacing-2x-small);
+}
+
+sl-option {
+  --sl-color-neutral-700: var(--sl-input-color);
 }
 
 sl-checkbox {

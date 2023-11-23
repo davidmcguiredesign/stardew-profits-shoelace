@@ -519,11 +519,11 @@ function renderGraph() {
 		.append("rect")
 			.attr("x", function(d, i) {
 				if (d.drawProfit < 0 && options.buySeed && options.buyFert)
-					return x(i) + barOffsetX + (barWidth / miniBar) * 2;
+					return x(i) + barOffsetX;
 				else if (d.drawProfit < 0 && !options.buySeed && options.buyFert)
-					return x(i) + barOffsetX + barWidth / miniBar;
+					return x(i) + barOffsetX;
 				else if (d.drawProfit < 0 && options.buySeed && !options.buyFert)
-					return x(i) + barOffsetX + barWidth / miniBar;
+					return x(i) + barOffsetX;
 				else
 					return x(i) + barOffsetX;
 			})
@@ -539,22 +539,13 @@ function renderGraph() {
 				else
 					return height - y(-d.drawProfit);
 			})
-			.attr("width", function(d) {
-				if (d.drawProfit < 0 && options.buySeed && options.buyFert)
-					return barWidth - (barWidth / miniBar) * 2;
-				else if (d.drawProfit < 0 && !options.buySeed && options.buyFert)
-					return barWidth - barWidth / miniBar;
-				else if (d.drawProfit < 0 && options.buySeed && !options.buyFert)
-					return barWidth - barWidth / miniBar;
+			.attr("width", barWidth)
+			.attr("class", function(d) {
+				if (d.drawProfit >= 0)
+					return "profit";
 				else
-					return barWidth;
-			})
- 			.attr("fill", function (d) {
- 				if (d.drawProfit >= 0)
- 					return "lime";
- 				else
- 					return "red";
- 			});
+					return "loss";
+			});
 
 	barsSeed = gSeedLoss.selectAll("rect")
 		.data(cropList)
@@ -568,8 +559,8 @@ function renderGraph() {
 				else
 					return 0;
 			})
-			.attr("width", barWidth / miniBar)
- 			.attr("fill", "orange");
+			.attr("width", barWidth)
+			.attr("class", "cost")
 
 	barsFert = gFertLoss.selectAll("rect")
 		.data(cropList)
@@ -577,7 +568,7 @@ function renderGraph() {
 		.append("rect")
 			.attr("x", function(d, i) {
 				if (options.buySeed)
-					return x(i) + barOffsetX + barWidth / miniBar;
+					return x(i) + barOffsetX;
 				else
 					return x(i) + barOffsetX;
 			})
@@ -588,8 +579,8 @@ function renderGraph() {
 				else
 					return 0;
 			})
-			.attr("width", barWidth / miniBar)
- 			.attr("fill", "brown");
+			.attr("width", barWidth)
+ 			.attr("class", "fert");
 
  	imgIcons = gIcons.selectAll("image")
 		.data(cropList)
@@ -880,11 +871,11 @@ function updateGraph() {
 		.transition()
 			.attr("x", function(d, i) {
 				if (d.drawProfit < 0 && options.buySeed && options.buyFert)
-					return x(i) + barOffsetX + (barWidth / miniBar) * 2;
+					return x(i) + barOffsetX;
 				else if (d.drawProfit < 0 && !options.buySeed && options.buyFert)
-					return x(i) + barOffsetX + barWidth / miniBar;
+					return x(i) + barOffsetX;
 				else if (d.drawProfit < 0 && options.buySeed && !options.buyFert)
-					return x(i) + barOffsetX + barWidth / miniBar;
+					return x(i) + barOffsetX;
 				else
 					return x(i) + barOffsetX;
 			})
@@ -900,21 +891,12 @@ function updateGraph() {
 				else
 					return height - y(-d.drawProfit);
 			})
-			.attr("width", function(d) {
-				if (d.drawProfit < 0 && options.buySeed && options.buyFert)
-					return barWidth - (barWidth / miniBar) * 2;
-				else if (d.drawProfit < 0 && !options.buySeed && options.buyFert)
-					return barWidth - barWidth / miniBar;
-				else if (d.drawProfit < 0 && options.buySeed && !options.buyFert)
-					return barWidth - barWidth / miniBar;
-				else
-					return barWidth;
-			})
- 			.attr("fill", function (d) {
+			.attr("width", barWidth)
+ 			.attr("class", function (d) {
  				if (d.drawProfit >= 0)
- 					return "lime";
+ 					return "profit";
  				else
- 					return "red";
+ 					return "loss";
  			});
 
 	barsSeed.data(cropList)
@@ -927,8 +909,8 @@ function updateGraph() {
 				else
 					return 0;
 			})
-			.attr("width", barWidth / miniBar)
- 			.attr("fill", "orange");
+			.attr("width", barWidth)
+			.attr("class", "cost");
 
 	barsFert.data(cropList)
 		.transition()
@@ -945,8 +927,8 @@ function updateGraph() {
 				else
 					return 0;
 			})
-			.attr("width", barWidth / miniBar)
- 			.attr("fill", "brown");
+			.attr("width", barWidth)
+			.attr("class", "fert");
 
  	imgIcons.data(cropList)
 		.transition()
