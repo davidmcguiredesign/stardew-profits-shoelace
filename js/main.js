@@ -1207,6 +1207,7 @@ async function initial() {
 		customElements.whenDefined('sl-select'),
 		customElements.whenDefined('sl-checkbox'),
 		customElements.whenDefined('sl-input'),
+		customElements.whenDefined('sl-button'),
 	];
 
 	await Promise.allSettled(promises);
@@ -1216,6 +1217,22 @@ async function initial() {
 		let action = el.getAttribute('sl-action');
 		if (action=='refresh') el.addEventListener(event, refresh);
 		if (action=='rebuild') el.addEventListener(event, rebuild);
+	}
+
+	for (const el of document.querySelectorAll('[stepper="wrapper"]')) {
+		let target = el.querySelector('[stepper="target"]');
+		let up = el.querySelector('[stepper="increment"]');
+		let down = el.querySelector('[stepper="decrement"]');
+		up.addEventListener('click', e=> {
+			val = target.getAttribute('value');
+			target.setAttribute('value', parseInt(val) + 1);
+			refresh();
+		});
+		down.addEventListener('click', e=> {
+			val = target.getAttribute('value');
+			target.setAttribute('value', parseInt(val) - 1);
+			refresh();
+		});
 	}
 
 	optionsLoad();
