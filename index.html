@@ -12,6 +12,8 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/cdn/themes/dark.css" />
 		<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.8.0/cdn/shoelace-autoloader.js"></script>
 		<link rel="stylesheet" href="style/shoelace.css">
+		<link rel="preconnect" href="https://fonts.bunny.net">
+		<link href="https://fonts.bunny.net/css?family=exo-2:400,600" rel="stylesheet" />
 
 	</head>
 	<body>
@@ -41,11 +43,11 @@
 				</sl-select>
 
 				<sl-checkbox type="checkbox" id="cross_season" sl-event="change" sl-action="refresh">Cross season</sl-checkbox>
-				<div class="row">
-					<sl-button class="square"><sl-icon name="dash-lg"></sl-icon></sl-button>
+				<div class="row lowered">
+					<sl-button class="square"><sl-icon name="caret-left-fill"></sl-icon></sl-button>
 					<sl-input label="Number of days" type="number" id="number_days" value="28" sl-event="change" sl-action="refresh"></sl-input>
-					<sl-input label="Current day" type="number" id="current_day" value="1" sl-event="input" sl-action="refresh"></sl-input>
-					<sl-button class="square"><sl-icon name="plus-lg"></sl-icon></sl-button>
+					<sl-input type="number" id="current_day" value="1" sl-event="input" sl-action="refresh"></sl-input>
+					<sl-button class="square"><sl-icon name="caret-right-fill"></sl-icon></sl-button>
 				</div>
 
 				<sl-select label="Produce type" id="select_produce" value="1" sl-event="change" sl-action="refresh">
