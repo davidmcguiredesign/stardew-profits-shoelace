@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>Chart</title>
+
+<script src='https://kit.fontawesome.com/252d3a6cc8.js' crossorigin='anonymous'></script>
+
+<!-- proxima-nova, roboto -->
+<link rel='stylesheet' href='https://use.typekit.net/apt7qjc.css'>
+
+<script src='js/chart.js'></script>
+</head>
+<body>
+
+<div id="chart" style="--max:90;--min:-60;--fert:12;--tick:15px;">
+	<div id="axis">
+		<!-- <div class="ticks"></div> -->
+		<div class="steps">
+			<div class="step" style="--tick-step:-50;"> -50</div>
+			<div class="step" style="--tick-step:-45;"> -45</div>
+			<div class="step" style="--tick-step:-40;"> -40</div>
+			<div class="step" style="--tick-step:-35;"> -35</div>
+			<div class="step" style="--tick-step:-30;"> -30</div>
+			<div class="step" style="--tick-step:-25;"> -25</div>
+			<div class="step" style="--tick-step:-20;"> -20</div>
+			<div class="step" style="--tick-step:-15;"> -15</div>
+			<div class="step" style="--tick-step:-10;"> -10</div>
+			<div class="step" style="--tick-step: -5;">  -5</div>
+			<div class="step" style="--tick-step:  0;">   0</div>
+			<div class="step" style="--tick-step:  5;">   5</div>
+			<div class="step" style="--tick-step: 10;">  10</div>
+			<div class="step" style="--tick-step: 15;">  15</div>
+			<div class="step" style="--tick-step: 20;">  20</div>
+			<div class="step" style="--tick-step: 25;">  25</div>
+			<div class="step" style="--tick-step: 30;">  30</div>
+			<div class="step" style="--tick-step: 35;">  35</div>
+			<div class="step" style="--tick-step: 40;">  40</div>
+			<div class="step" style="--tick-step: 45;">  45</div>
+			<div class="step" style="--tick-step: 50;">  50</div>
+		</div>
+	</div>
+	
+	<div class="bar" style="--seed:46;--sell:132;">
+		<div class="fert"></div>
+		<div class="seed"></div>
+		<div class="loss"></div>
+		<div class="profit"></div>
+		<div class="sell"></div>
+	</div>
+	<div class="bar" style="--seed:33;--sell:40;">
+		<div class="fert"></div>
+		<div class="seed"></div>
+		<div class="loss"></div>
+		<div class="profit"></div>
+		<div class="sell"></div>
+	</div>
+	
+	<div id="zero">
+		<div class="line"></div>
+	</div>
+</div>
+
+<style>
+	* {
+		box-sizing: border-box;
+		font: inherit;
+	}
+	html {
+		background: #fff;
+		--radius: 4px;
+	}
+	body {
+		width: 25rem;
+		min-height: 90vh;
+		margin-block: 5vh;
+		margin-inline: auto;
+		background: center / cover no-repeat url("/img/bg_day.png");
+		overflow: hidden;
+		padding: 1rem;
+	}
+
+	#chart {
+		background: hsl(33, 100%, 80%);
+		position: relative;
+		padding-bottom: .5rem;
+		padding-top: 3rem;
+		--scale: calc(var(--max) - var(--min));
+		--zero: calc(100% - (var(--max) / var(--scale) * 100%));
+		--real-zero: var(--zero);
+	}
+
+	#axis {
+		overflow-x: hidden;
+		position: absolute;
+		inset: 0;
+		bottom: unset;
+		height: 2.5rem;
+	}
+
+	#axis .steps {
+		position: absolute;
+		bottom: .75rem;
+		font-size: max(8px, .6rem);
+		line-height: .8;
+		display: flex;
+		gap: var(--tick);
+		left: var(--zero);
+		transform: translateX(-50%);
+	}
+	
+	#axis .step {
+		width: 0;
+		height: 0;
+		transform: rotate(90deg) translateY(-.4em);
+		display: flex;
+		margin-inline: var(--tick);
+		justify-content: end;
+	}
+
+	#axis .step::before {
+		content: "";
+	}
+	
+	#axis .ticks {
+		--tick-color: black;
+		--tick-thickness: 1px;
+		position: absolute;
+		bottom: 0;
+		height: .5rem;
+		width: calc(var(--tick) * 100);
+		left: calc(var(--zero) - var(--tick-thickness) / 2);
+		/* margin-left: cacl(var(--tick-thickness) / -2); */
+		transform: translateX(-50%);
+		background: repeating-linear-gradient(to right,
+			var(--tick-color),
+			var(--tick-color) var(--tick-thickness),
+			transparent var(--tick-thickness),
+			transparent var(--tick)
+		);
+	}
+
+	#zero {
+		--line: 2px;
+		position: absolute;
+		inset: 0px;
+		top: 2rem;
+	}
+	
+	#zero .line {
+		position: absolute;
+		left: calc(var(--zero) - var(--line) / 2);
+		width: var(--line);
+		height: 100%;
+		background: #000;
+	}
+
+	.bar {
+		content: "";
+		height: 2rem;
+		position: relative;
+		margin-block: .5rem;
+		--profit: max(0, var(--sell) - var(--seed) - var(--fert));
+		--loss: min(0, var(--sell) - var(--seed) - var(--fert));
+
+		--seed-length:		calc(var(--seed) / var(--scale) * 100%);
+		--fert-length:		calc(var(--fert) / var(--scale) * 100%);
+		--sell-length:		calc(var(--sell) / var(--scale) * 100%);
+		--loss-length:		calc(var(--loss) / var(--scale) * -100%);
+		--profit-length:	calc(var(--profit) / var(--scale) * 100%);
+	}
+
+	.bar > div {
+		width: var(--length);
+		top: 2px;
+		bottom: 1px;
+		position: absolute;
+		left: calc(var(--zero) - var(--offset));
+		content: "";
+		/* --offset defined later */
+	}
+	
+	.bar > .seed { background: #FFE3AC; }
+	.bar > .fert { background: #c7cce5; }
+	.bar > .sell { border: 2px solid black; }
+	.bar > .loss { background: #d60000; opacity: 64%; }
+	.bar > .profit { background: #36ac00; opacity: 70%; }
+
+	.bar > .seed {
+		--length: var(--seed-length);
+		--offset: calc(var(--seed-length) + var(--fert-length));
+		border-top-left-radius: calc(var(--radius) * .5);
+		border-bottom-left-radius: var(--radius);
+	}
+	.bar > .fert {
+		--length: var(--fert-length);
+		--offset: var(--fert-length);
+	}
+	.bar > .sell {
+		--length: var(--sell-length);
+		--offset: calc(var(--seed-length) + var(--fert-length));
+		top: 0;
+		bottom: 0;
+		border-radius: var(--radius);
+		box-shadow: inset -1px 2px 0px #fff;
+		z-index: 1;
+	}
+	.bar > .loss {
+		--length: var(--loss-length);
+		--offset: var(--loss-length);
+	}
+	.bar > .profit {
+		--length: var(--profit-length);
+		--offset: 0%;
+		border-top-right-radius: calc(var(--radius) * .5);
+		border-bottom-right-radius: var(--radius);
+	}
+</style>
+
+</body>
