@@ -13,32 +13,9 @@
 </head>
 <body>
 
-<div id="chart" style="--max:90;--min:-60;--fert:12;--tick:15px;">
+<div id="chart" style="--ceiling:90;--floor:-60;--fert:12;">
 	<div id="axis">
-		<!-- <div class="ticks"></div> -->
-		<div class="steps">
-			<div class="step" style="--tick-step:-50;"> -50</div>
-			<div class="step" style="--tick-step:-45;"> -45</div>
-			<div class="step" style="--tick-step:-40;"> -40</div>
-			<div class="step" style="--tick-step:-35;"> -35</div>
-			<div class="step" style="--tick-step:-30;"> -30</div>
-			<div class="step" style="--tick-step:-25;"> -25</div>
-			<div class="step" style="--tick-step:-20;"> -20</div>
-			<div class="step" style="--tick-step:-15;"> -15</div>
-			<div class="step" style="--tick-step:-10;"> -10</div>
-			<div class="step" style="--tick-step: -5;">  -5</div>
-			<div class="step" style="--tick-step:  0;">   0</div>
-			<div class="step" style="--tick-step:  5;">   5</div>
-			<div class="step" style="--tick-step: 10;">  10</div>
-			<div class="step" style="--tick-step: 15;">  15</div>
-			<div class="step" style="--tick-step: 20;">  20</div>
-			<div class="step" style="--tick-step: 25;">  25</div>
-			<div class="step" style="--tick-step: 30;">  30</div>
-			<div class="step" style="--tick-step: 35;">  35</div>
-			<div class="step" style="--tick-step: 40;">  40</div>
-			<div class="step" style="--tick-step: 45;">  45</div>
-			<div class="step" style="--tick-step: 50;">  50</div>
-		</div>
+		<div class="steps"></div>
 	</div>
 	
 	<div class="bar" style="--seed:46;--sell:132;">
@@ -85,59 +62,43 @@
 		position: relative;
 		padding-bottom: .5rem;
 		padding-top: 3rem;
-		--scale: calc(var(--max) - var(--min));
-		--zero: calc(100% - (var(--max) / var(--scale) * 100%));
+		--scale: calc(var(--ceiling) - var(--floor));
+		--zero: calc(100% - (var(--ceiling) / var(--scale) * 100%));
 		--real-zero: var(--zero);
+		--line: 2px;
+		display: block;
 	}
 
 	#axis {
-		overflow-x: hidden;
+		/* overflow-x: hidden; */
 		position: absolute;
 		inset: 0;
 		bottom: unset;
 		height: 2.5rem;
 	}
 
-	#axis .steps {
-		position: absolute;
-		bottom: .75rem;
+	:is(#axis) .steps {
 		font-size: max(8px, .6rem);
-		line-height: .8;
-		display: flex;
-		gap: var(--tick);
-		left: var(--zero);
-		transform: translateX(-50%);
+		line-height: calc(100% - (var(--line) / 2));
 	}
 	
-	#axis .step {
+	:is(#axis) .step {
 		width: 0;
 		height: 0;
-		transform: rotate(90deg) translateY(-.4em);
+		transform: rotate(90deg) translateY(-.5em);
 		display: flex;
-		margin-inline: var(--tick);
 		justify-content: end;
+		position: absolute;
+		left: calc(var(--zero) + ((var(--step) / var(--scale)) * 100%));
+		bottom: 0.75rem;
 	}
 
-	#axis .step::before {
-		content: "";
+	#chart, #chart * {
+		transition: .5s;
 	}
-	
-	#axis .ticks {
-		--tick-color: black;
-		--tick-thickness: 1px;
-		position: absolute;
-		bottom: 0;
-		height: .5rem;
-		width: calc(var(--tick) * 100);
-		left: calc(var(--zero) - var(--tick-thickness) / 2);
-		/* margin-left: cacl(var(--tick-thickness) / -2); */
-		transform: translateX(-50%);
-		background: repeating-linear-gradient(to right,
-			var(--tick-color),
-			var(--tick-color) var(--tick-thickness),
-			transparent var(--tick-thickness),
-			transparent var(--tick)
-		);
+
+	#axis .step:not(.visible) {
+		opacity: 0;
 	}
 
 	#zero {

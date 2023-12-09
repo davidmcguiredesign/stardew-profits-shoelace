@@ -1,13 +1,21 @@
-function subStyle(element, key, value) {
+function set_cssVariable(element, key, value, prefix='--') {
 	let existing = element.getAttribute('style') || '';
 	if (existing.includes(key)) {
-		existing.replace(`/(?<=${key}:)[^;]+(?=;)/g`, value);
+		let regex = `(?<=${prefix}${key}:)[^;]+(?=;)`;
+		existing = existing.replace(new RegExp(regex), value);
 	} else {
-		existing += `${key}:${value};`;
+		existing += `${prefix}${key}:${value};`;
 	}
 	element.setAttribute('style', existing);
 
 	return element;
+}
+
+function get_cssVariable(element, key, prefix='--') {
+	let existing = element.getAttribute('style') || '';
+
+	existing = existing.match(new RegExp(`(?<=${prefix}${key}:)[^;]+(?=;)`));
+	return existing ? existing[0] : '';
 }
 
 const bars = new Map();
@@ -24,8 +32,8 @@ function bar(cropName) {
 		bar.append(part);
 	}
 
-	bar.seed =(value)=> subStyle(bar, '--seed', value);
-	bar.sell =(value)=> subStyle(bar, '--sell', value);
+	bar.seed =(value)=> set_cssVariable(bar, 'seed', value);
+	bar.sell =(value)=> set_cssVariable(bar, 'sell', value);
 
 	document.getElementById('chart').append(bar);
 	bars.set(cropName, bar);
@@ -34,11 +42,9 @@ function bar(cropName) {
 }
 
 function axis() {
-	if (bars.has('axis')) return bars.get(axis);
+	if (bars.has('axis')) return bars.get('axis');
 	
 	const axis = document.getElementById('axis');
-
-	// get range
 
 	// determine how many tics are readable
 	axis._precision =()=> 20;
@@ -54,26 +60,76 @@ function axis() {
 		return increments[0] * scale;
 	}
 
-	// set axis limits
-	axis.min = 0;
-	axis.max = 0;
+	axis._steps =(ceiling, floor)=> {
+		let increment = axis._increment(ceiling - floor);
+		let steps = [0];
 
-	axis.ceiling =(newValue)=> {
-		let increment = axis._increment(newValue - axis.min);
-		let limit = 0;
-		while (limit < newValue) limit += increment;
+		while (steps.at(-1) < ceiling)
+			steps.push(steps.at(-1) + increment);
 
-		return steps;
-	}
-
-	axis.floor =(newValue)=> {
-		let increment = -1 * axis._increment(axis.max - newValue);
-		let limit = 0;
-		while (newValue < limit) limit += increment;
+		while (steps[0] > floor)
+			steps.unshift(steps[0] - increment);
 
 		return steps;
 	}
 
+	axis.ceiling =(newValue=null, render=true)=> {
+		if (newValue===null || newValue===undefined)
+			return get_cssVariable(axis.parentElement,'ceiling');
+
+		console.log(axis);
+		set_cssVariable(axis.parentElement,'ceiling', newValue);
+		if (render) axis.render();
+		
+		return axis;
+	}
+
+	axis.floor =(newValue=null, render=true)=> {
+		if (newValue===null || newValue===undefined)
+			return get_cssVariable(axis.parentElement,'floor');
+
+		console.log(axis);
+		set_cssVariable(axis.parentElement,'floor', newValue);
+		if (render) axis.render();
+		
+		return axis;
+	}
+
+	axis.getStep =(int)=> {
+		let existing = axis.querySelector(`.step[axis-step="${int}"]`);
+		if (existing) return existing;
+
+		let newStep = document.createElement('div');
+		newStep.classList.add('step');
+		set_cssVariable(newStep, 'step', int);
+		axis.querySelector('.steps').append(newStep);
+		newStep.setAttribute('axis-step', int);
+		newStep.innerText = int;
+
+		return newStep;
+	}
+
+	axis.render =()=> {
+		let floor = axis.floor();
+		let ceiling = axis.ceiling();
+
+		let steps = axis._steps(ceiling, floor);
+
+		console.log(steps.at(-1) == ceiling, steps[0] == floor);
+
+		axis.querySelectorAll('.step.visible').forEach(step => step.classList.remove('visible'));
+
+		for (const step of steps) {
+			axis.getStep(step).classList.add('visible');
+		}
+
+		if (ceiling != steps.at(-1)) axis.ceiling(steps.at(-1), false);
+		if (floor != steps[0]) axis.floor(steps[0], false);
+
+		return axis;
+	}
+
+	bars.set('axis', axis);
 	return axis;
 }
 
