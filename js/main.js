@@ -55,8 +55,10 @@ var barsTooltips;
 var options;
 var MAX_INT = Number.MAX_SAFE_INTEGER || Number.MAX_VALUE;
 
+const chart = document.querySelector('profit-chart');
+
 /**
- * Formats a specified number, adding separators for thousands.
+ * PURE. Formats a specified number, adding separators for thousands.
  * @param num The number to format.
  * @return Formatted string.
  */
@@ -73,294 +75,438 @@ function formatNumber(num) {
 }
 
 /**
- * Calculates the maximum number of harvests for a crop, specified days, season, etc.
- * @param cropID The ID of the crop to calculate. This corresponds to the crop number of the selected season.
- * @return Number of harvests for the specified crop.
+ * PUREISH. Modify fertilizer growth rate if the Agriculture skill is enabled.
+ * 
+ * @param {Object} fertilizerId The value of `options.fertilizer`
+ * @param {Boolean} agriSkill The value of `options.skills.agri`
+ * @returns {Object} The fertilizer object, containing all the fertilizer data
  */
-function harvests(cropID) {
-	var crop = seasons[options.season].crops[cropID];
-	var fertilizer = fertilizers[options.fertilizer];
-	// Tea blooms every day for the last 7 days of a season
-	var isTea = crop.name == "Tea Leaves";
+function agriFert(fertilizerId, agriSkill) {
+	const fertilizer = fertilizers[fertilizerId]
+	if (agriSkill) fertilizer.growth -= 0.1;
+	return fertilizer;
+}
 
-	// if the crop is NOT cross season, remove 28 extra days for each extra season
-	var remainingDays = options.days - 28;
-	if (options.crossSeason && options.season != 4) {
-        var i = options.season + 1;
-        if (i >= 4)
-            i = 0;
-		for (var j = 0; j < seasons[i].crops.length; j++) {
-			var seasonCrop = seasons[i].crops[j];
-			if (crop.name == seasonCrop.name) {
-				remainingDays += 28;
-				break;
-			}
-		}
-	}
-    else {
-        remainingDays = options.days;
-    }
+/**
+ * PUREISH. Calculates the maximum number of harvests for a crop, specified days, season, etc.
+ * 
+ * @param {string|number} fertilizerId The value of `options.fertilizer`
+ * @param {boolean} agriSkill The value of `options.skills.agri`
+ * @param {number} days The value of `options.seasonLength`
+ * @param {object} crop The season’s crop object, containing all the crop data.
+ * @return {number} Number of harvests for the specified crop.
+ */
+function harvests(fertilizerId, agriSkill, days, crop) {
 
-	// console.log("=== " + crop.name + " ===");
+	const isTea = crop.name == "Tea Leaves";
+	
+	const initialGrowth = ~~(crop.growth.initial * agriFert(fertilizerId, agriSkill));
+	if (!crop.growth.regrow) crop.growth.regrow = initialGrowth;
+	const remainingDays = Math.min(days, crop.plantableDays);
+	
+	let day = 1 + initialGrowth;
+	let harvests = 0;
 
-	var harvests = 0;
-	var day = 1;
+	do {
+		if (!isTea && day <= remainingDays) harvests++;
+		else if (21 < (day-1) % 28 + 1) harvests++;
+		day += crop.growth.regrow;
+	} while (day <= daysRemaining);
 
-	if (options.skills.agri)
-		day += Math.floor(crop.growth.initial * (fertilizer.growth - 0.1));
-	else
-		day += Math.floor(crop.growth.initial * fertilizer.growth);
-
-	if (day <= remainingDays && (!isTea || ((day-1) % 28 + 1) > 21))
-		harvests++;
-
-	while (day <= remainingDays) {
-		if (crop.growth.regrow > 0) {
-			// console.log("Harvest on day: " + day);
-			day += crop.growth.regrow;
-		}
-		else {
-			// console.log("Harvest on day: " + day);
-			if (options.skills.agri)
-				day += Math.floor(crop.growth.initial * (fertilizer.growth - 0.1));
-			else
-				day += Math.floor(crop.growth.initial * fertilizer.growth);
-		}
-
-		if (day <= remainingDays && (!isTea || ((day-1) % 28 + 1) > 21))
-			harvests++;
-	}
-
-	// console.log("Harvests: " + harvests);
 	return harvests;
 }
 
 /**
- * Calculates the minimum cost of a single packet of seeds.
+ * PURE. Calculates the minimum cost of a single packet of seeds.
+ * 
  * @param crop The crop object, containing all the crop data.
- * @return The minimum cost of a packet of seeds, taking options into account.
+ * @param {Object} seeds The value of `options.seeds`.
+ * 
+ * @return {Number} The minimum cost of a packet of seeds, taking options into account.
  */
-function minSeedCost(crop) {
+function minSeedCost(crop, seeds) {
 	var minSeedCost = Infinity;
 
-	if (crop.seeds.pierre != 0 && options.seeds.pierre && crop.seeds.pierre < minSeedCost)
+	if (crop.seeds.pierre != 0 && seeds.pierre && crop.seeds.pierre < minSeedCost)
 		minSeedCost = crop.seeds.pierre;
-	if (crop.seeds.joja != 0 && options.seeds.joja && crop.seeds.joja < minSeedCost)
+	if (crop.seeds.joja != 0 && seeds.joja && crop.seeds.joja < minSeedCost)
 		minSeedCost = crop.seeds.joja;
-	if (crop.seeds.special != 0 && options.seeds.special && crop.seeds.special < minSeedCost)
+	if (crop.seeds.special != 0 && seeds.special && crop.seeds.special < minSeedCost)
 		minSeedCost = crop.seeds.special;
 	
 	return minSeedCost;
 }
 
 /**
- * Calculates the number of crops planted.
- * @param crop The crop object, containing all the crop data.
+ * PURE. Calculates the number of crops planted.
+ * 
+ * @param {boolean} buySeed The value of options.buySeed
+ * @param {Number} maxSeedMoney The value of options.maxSeedMoney
+ * @param {Number} planted The value of options.planted
+ * @param {Object} crop The crop object, containing all the crop data.
+ * @param {Object} seeds The value of options.seeds
+ * 
  * @return The number of crops planted, taking the desired number planted and the max seed money into account.
  */
-function planted(crop) {
-	if (options.buySeed && options.maxSeedMoney !== 0) {
-		return Math.min(options.planted, Math.floor(options.maxSeedMoney / minSeedCost(crop)));
-	} else {
-		return options.planted;
-	}
+function plant(buySeed, maxSeedMoney, planted, crop, seeds) {
+	if (!buySeed || maxSeedMoney === 0) return planted;
+
+	return Math.min(planted, Math.floor(maxSeedMoney / minSeedCost(crop, seeds)));
 }
 
 /**
- * Calculates the ratios of different crop ratings based on fertilizer level and player farming level
- * Math is from Crop.harvest(...) game logic
+ * PURE. Calculates the ratios of different crop ratings based on fertilizer level and player farming level. Math is from Crop.harvest(...) game logic.
  *
- * @param fertilizer The level of the fertilizer (none:0, basic:1, quality:2, deluxe:3)
- * @param level The total farming skill level of the player
- * @return Object containing ratios of iridium, gold, silver, and unrated crops liklihood
+ * @param {Boolean} isWildseed Value of `crop.isWildseed`.
+ * @param {Boolean} botanist Value of `options.skills.botanist`.
+ * @param {Object} fertilizerRatio The value of `options.fertilizer`.
+ * @param {Number} level The total farming skill level of the player.
+ * @return Object containing likelihood ratios of iridium, gold, silver, and unrated crops.
  */
-function levelRatio(fertilizer, level, isWildseed) {
+function levelRatio(isWildseed, botanist, fertilizerRatio, level) {
 	var ratio = {};
+	fertilizerRatio = fertilizers[fertilizerRatio].ratio
 
-    if (isWildseed) {
+	if (isWildseed) {
+
 		// All wild crops are iridium if botanist is selected
-		if  (options.skills.botanist)
-        	ratio.ratioI = 1;
-		else
-			ratio.ratioI = 0;
+		ratio.i = botanist ? 1 : 0;
+
 		// Gold foraging is at a rate of foraging level/30 (and not iridium)
-		ratio.ratioG = level/30.0*(1-ratio.ratioI);
+		ratio.g = level / 30.0 * (1 - ratio.i);
+
 		// Silver is at a rate of foraging level/15 (and not gold or iridium)
-		ratio.ratioS = level/15.0*(1-ratio.ratioG-ratio.ratioI);
+		ratio.s = level / 15.0 * (1 - ratio.g - ratio.i);
+
 		// Normal is the remaining rate
-		ratio.ratioN = 1-ratio.ratioS-ratio.ratioG-ratio.ratioI;
+		ratio.n = 1 - ratio.s - ratio.g - ratio.i;
+
+	} else {
+
+		ratio.g = 0.02 * level
+		ratio.g += 0.2 * fertilizerRatio * ((level+2) / 12.0)
+		ratio.g += 0.01;
+
+    	ratio.i = fertilizerRatio < 3 ? 0 : ratio.g / 2;
+
+		ratio.g *= 1.0 - ratio.i;
+
+		ratio.s = Math.max(0,Math.min(0.75,ratio.g*2.0)*(1.0-ratio.g-ratio.i));
+
+		ratio.n = Math.max(0, 1.0 - ratio.s - ratio.g - ratio.i);
 	}
-    else
-	{
-		// Iridium is available on deluxe fertilizer at 1/2 gold ratio
-    	ratio.ratioI = fertilizer >= 3 ? (0.2*(level/10.0)+0.2*fertilizer*((level+2)/12.0)+0.01)/2 : 0;
-		// Calculate gold times probability of not iridium
-		ratio.ratioG = (0.2*(level/10.0)+0.2*fertilizer*((level+2)/12.0)+0.01)*(1.0-ratio.ratioI);
-		// Probability of silver capped at .75, times probability of not gold/iridium
-		ratio.ratioS = Math.max(0,Math.min(0.75,ratio.ratioG*2.0)*(1.0-ratio.ratioG-ratio.ratioI));
-		// Probability of not the other ratings
-		ratio.ratioN = Math.max(0, 1.0 - ratio.ratioS - ratio.ratioG - ratio.ratioI);
-	}
+
 	return ratio;
 }
 
 /**
- * Calculates the gross income for a specified crop.
- * @param {object} crop The crop object, containing all the crop data.
- * @return {object} Object containing sell price (not profit), taking options into amount
+ * PUREISH. Calculates the gross income for a specified crop.
+ * 
+ * @param {Number} foragingLevel The value of `options.foragingLevel`.
+ * @param {Number} level The value of `options.level`.
+ * @param {Boolean} botanistSkill The value of `options.skills.botanist`.
+ * @param {Number} fertilizerId The value of `options.fertilizer`.
+ * @param {Number} foodId The value of `options.food`.
+ * @param {Boolean} buySeed The value of `options.buySeed`.
+ * @param {Number} maxSeedMoney The value of `options.maxSeedMoney`.
+ * @param {Number} planted The value of `options.planted`.
+ * @param {Object} seeds The value of `options.seeds`.
+ * @param {Object} produce Value of `options.produce`. 0:raw, 1:jar, 2:keg.
+ * @param {Boolean} tillerSkill The value of `options.skills.till`.
+ * @param {Boolean} artiSkill The value of `options.skills.arti`.
+ * @param {Object} crop The crop object, containing all the crop data.
+ * 
+ * @return {Object} Object containing sell price (not profit), taking options into amount
  */
-function profit(crop) {
-	var num_planted = planted(crop);
-	var total_harvests = crop.harvests * num_planted;
-	var fertilizer = fertilizers[options.fertilizer];
-	var produce = options.produce;
+function sell(
+	foragingLevel,
+	level,
+	botanistSkill,
+	fertilizerId,
+	foodId,
+	buySeed, 
+	maxSeedMoney, 
+	planted, 
+	seeds, 
+	produce, 
+	tillerSkill,
+	artiSkill,
+	crop
+) {
+	let useLevel = crop.isWildseed ? foragingLevel : level;
+	let ratio = levelRatio(
+		crop.isWildseed, 
+		botanistSkill, 
+		fertilizers[fertilizerId].ratio, 
+		useLevel+foods[foodId].level
+	);
 
-    var useLevel = options.level;
-    if (crop.isWildseed)
-        useLevel = options.foragingLevel;
+	if (crop.name == 'Tea Leaves') ratio.n = 1, ratio.s = ratio.g = ratio.i = 0;
 
-	var {ratioN, ratioS, ratioG, ratioI} = levelRatio(fertilizer.ratio, useLevel+foods[options.food].level, crop.isWildseed);
-        
-	if (crop.name == "Tea Leaves") ratioN = 1, ratioS = ratioG = ratioI = 0;
-	var profit = 0;
-	
-	//Skip keg/jar calculations for ineligible crops (where corp.produce.jar or crop.produce.keg = 0)
-	
-	var userawproduce = false;
-	
-	switch(produce) {
-		case 0:	userawproduce = true; break; 
-		case 1: 
-			if(crop.produce.jarType == null) userawproduce = true;
-			break;
-		case 2:
-			if(crop.produce.kegType == null) userawproduce = true;
-			break;
+	let totalHarvests = crop.harvests * plant(
+		buySeed, 
+		maxSeedMoney, 
+		planted, 
+		crop, 
+		seeds
+	);
+
+	// skip keg/jar calculations for ineligible crops
+	let userawproduce = true;
+	if (produce==1 && crop.produce.jarType) userawproduce = false;
+	if (produce==2 && crop.produce.kegType) userawproduce = false;
+
+	// /** @var {Number} multiple The actual number of crops being sold */
+	// let multiple = crop.produce.extraPerc * crop.produce.extra * totalHarvests;
+
+	let extra = crop.produce.price * crop.produce.extraPerc;
+
+	let gross = 0;
+
+	if (userawproduce) {
+
+		gross += crop.produce.price * ratio.n;
+		gross += ~~(crop.produce.price * 1.25) * ratio.s;
+		gross += ~~(crop.produce.price * 1.5) * ratio.g;
+		gross += crop.produce.price * 2 * ratio.i;
+		gross += crop.produce.price * extra;
+		if (tillerSkill) gross *= 1.1;
+
+		gross *= totalHarvests;
+
+	} else {
+
+		gross = totalHarvests + (totalHarvests * extra);
+		let kegModifier = crop.produce.kegType === "Wine" ? 3 : 2.25;
+
+		if (produce == 1) gross *= crop.produce.price * 2 + 50;
+		else if (produce == 2) {
+			if (crop.produce.keg != null) gross *= crop.produce.keg;
+			else gross *= crop.produce.price * kegModifier;
+		}
+
+		if (artiSkill) gross *= 1.4;
 	}
-	
-	// console.log("Calculating raw produce value for: " + crop.name);
 
-	if (produce == 0 || userawproduce) {
-		profit += crop.produce.price * ratioN * total_harvests;
-		profit += Math.trunc(crop.produce.price * 1.25) * ratioS * total_harvests;
-		profit += Math.trunc(crop.produce.price * 1.5) * ratioG * total_harvests;
-		profit += crop.produce.price * 2 * ratioI * total_harvests;
-		// console.log("Profit (After normal produce): " + profit);
+	let profitData = ratio;
+	profitData.total = gross;
+	return profitData;
+}
 
-		if (crop.produce.extra > 0) {
-			profit += crop.produce.price * crop.produce.extraPerc * crop.produce.extra * total_harvests;
-			// console.log("Profit (After extra produce): " + profit);
-		}
+/** Gross profit for selling the raw produce of ONE harvest */
+function sell_raw(ratio, price, extra, tillerSkill) {
+	let gross = 0;
 
-		if (options.skills.till) {
-			profit *= 1.1;
-			// console.log("Profit (After skills): " + profit);
-		}
-	}
-	else {
-		var items = total_harvests;
-		items += crop.produce.extraPerc * crop.produce.extra * total_harvests;
-		var kegModifier = crop.produce.kegType === "Wine" ? 3 : 2.25;
+	gross += price * ratio.n;
+	gross += ~~(price * 1.25) * ratio.s;
+	gross += ~~(price * 1.5) * ratio.g;
+	gross += price * 2 * ratio.i;
+	gross += price * extra; // Technically imprecise, since extras have the same quality chances as the first crop does _unfertilized_. But to become precise, either a tricky piece of code would have to be written (mostly) twice, or the whole function would have to be run on each crop.
+	if (tillerSkill) gross *= 1.1;
 
-		switch (produce) {
-			case 1: profit += items * (crop.produce.price * 2 + 50); break;
-			case 2: profit += items * (crop.produce.keg != null ? crop.produce.keg : crop.produce.price * kegModifier); break;
-		}
+	return gross;
+}
+
+/** Gross profit for selling the preserved produce of ALL harvests */
+function sell_jars(totalHarvests, extra, price, artiSkill) {
+	price = (price * 2) + 50;
+
+	if (artiSkill) price *= 1.4;
+	price *= extra;
+	price *= totalHarvests + 1;
+
+	return price;
+}
+
+/** Gross profit for selling the fermented produce of ALL harvests */
+function sell_kegs(totalHarvests, extra, price, kegType, kegPrice=undefined, artiSkill) {
+	if ('Juice' == kegType) price *= 2.25;
+	else if ('Wine' == kegType) price *= 3;
+	else price = kegPrice;
+
+	if (artiSkill) price *= 1.4;
+	price *= extra;
+	price *= totalHarvests + 1;
+
+	return price;
+}
 
 /**
+ * PURE. Calculates the profit for a specified crop.
+ * @param crop The crop object, containing all the crop data.
+ * @param profitData An object containing a sell value.
+ * @param {boolean} buySeed Whether to subtract seed cost (the value of `options.buySeed`).
+ * @param {boolean} buyFert Whether to subtract fertilizer cost (the value of `options.buyFert`).
+ * @return The total profit.
+ */
+function profit(crop, profitData, buySeed, buyFert) {
+	let profit = profitData.sell;
+	if (buySeed) profit += crop.seedLoss;
+	if (buyFert) profit += crop.fertLoss;
+
+	profitData.total = profit;
 	return profitData;
 }
 
 /**
- * Calculates the loss to profit when seeds are bought.
- * @param crop The crop object, containing all the crop data.
- * @return The total loss.
+ * PURE. Calculates the loss to profit when seeds are bought.
+ * 
+ * @param {Object} crop The crop object, containing all the crop data.
+ * @param {Object} seeds The value of `options.seeds`.
+ * @param {Boolean} buySeed The value of `options.buySeed`.
+ * @param {Number} maxSeedMoney The value of `options.maxSeedMoney`.
+ * @param {Number} planted The value of `options.planted`.
+ * 
+ * @return {Number} The total loss.
  */
-function seedLoss(crop) {
+function seedLoss(crop, seeds, buySeed, maxSeedMoney, planted) {
 	var harvests = crop.harvests;
 
-    var loss = -minSeedCost(crop);
+	var loss = -minSeedCost(crop, seeds);
 
 	if (crop.growth.regrow == 0 && harvests > 0)
 		loss = loss * harvests;
 
-	return loss * planted(crop);
+	return loss * plant(
+		buySeed,
+		maxSeedMoney,
+		planted,
+		crop,
+		seeds
+	);
 }
 
 /**
- * Calculates the loss to profit when fertilizer is bought.
- *
- * Note that harvesting does not destroy fertilizer, so this is
+ * PUREISH. Calculates the loss to profit when fertilizer is bought. 
+ * Note that harvesting does not destroy fertilizer, so this is 
  * independent of the number of harvests.
  *
- * @param crop The crop object, containing all the crop data.
- * @return The total loss.
+ * @param {Object} crop The crop object, containing all the crop data.
+ * @param {Number} fertilizerId The value of `options.fertilizer`.
+ * @param {Number} fertilizerSource The value of `options.fertilizerSource`.
+ * @param {Boolean} buySeed The value of `options.buySeed`.
+ * @param {Number} maxSeedMoney The value of `options.maxSeedMoney`.
+ * @param {Number} planted The value of `options.planted`.
+ * @param {Object} seeds The value of `options.seeds`.
+ * 
+ * @return {Number} The total loss.
  */
-function fertLoss(crop) {
+function fertLoss(crop, fertilizerId, fertilizerSource, buySeed, maxSeedMoney, planted, seeds) {
 	var loss;
-	if(options.fertilizer == 4 && options.fertilizerSource == 1)
-		loss = -fertilizers[options.fertilizer].alternate_cost;
+	let fertilizer = fertilizers[fertilizerId];
+	if (fertilizerId == 4 && fertilizerSource == 1)
+		loss = -fertilizer.alternate_cost;
 	else
-		loss = -fertilizers[options.fertilizer].cost;
-	return loss * planted(crop);
+		loss = -fertilizer.cost;
+	return loss * plant(
+		buySeed,
+		maxSeedMoney,
+		planted,
+		crop,
+		seeds
+	);
 }
 
 /**
- * Converts any value to the average per day value.
- * @param value The value to convert.
+ * PURE. Converts any value to the average per day value.
+ * @param {Number} value The value to convert
+ * @param {Number} days The number of days over which to spread the value
  * @return Value per day.
  */
-function perDay(value) {
-	return value / options.days;
+function perDay(value, days) {
+	return value / days;
 }
 
 /**
- * Performs filtering on a season's crop list, saving the new list to the cropList array.
+ * IMPURE. Performs filtering on a season's crop list, saving the new list to the cropList array.
+ * @param {Number} season The value of `options.season`.
+ * @param {Object} seeds The value of `options.seeds`.
  */
-function fetchCrops() {
+function fetchCrops(season, seeds) {
 	cropList = [];
 
-	var season = seasons[options.season];
+	var season = seasons[season];
 
-	for (var i = 0; i < season.crops.length; i++) {
-	    if ((options.seeds.pierre && season.crops[i].seeds.pierre != 0) ||
-	    	(options.seeds.joja && season.crops[i].seeds.joja != 0) ||
-	    	(options.seeds.special && season.crops[i].seeds.special != 0)) {
-	    	cropList.push(JSON.parse(JSON.stringify(season.crops[i])));
-	    	cropList[cropList.length - 1].id = i;
+	for (const c in season.crops) {
+		const crop = season.crops[c];
+
+		if (
+			(seeds.pierre && crop.seeds.pierre != 0)
+			||
+			(seeds.joja && crop.seeds.joja != 0)
+			||
+			(seeds.special && crop.seeds.special != 0)
+		) {
+
+			crop.id = c;
+			cropList.push(JSON.parse(JSON.stringify(crop)));
+
 		}
 	}
+
+	return cropList;
 }
 
 /**
- * Calculates all profits and losses for all crops in the cropList array.
+ * PUREISH. Calculates all profits and losses for all crops in the cropList array.
+ * 
+ * @param {Object[]} cropList Crop objects
+ * @param {boolean} gathererSkill The value of `options.skills.gatherer`.
+ * @param {Boolean} buySeed The value of `options.buySeed`.
+ * @param {Number} maxSeedMoney The value of `options.maxSeedMoney`.
+ * @param {Number} planted The value of `options.planted`.
+ * @param {Object} seeds The value of `options.seeds`.
+ * @param {Number} fertilizerId The value of `options.fertilizer`.
+ * @param {Boolean} agriSkill The value of `options.skills.agri`.
+ * @param {Number} days The value of `options.seasonLength`.
+ * @param {Number} fertilizerSource The value of `options.fertilizerSource`.
+ * @param {Boolean} buyFert The value of `options.buyFert`.
+ * 
+ * @return {Object[]} Crop objects with profit properties defined
  */
-function valueCrops() {
-	for (var i = 0; i < cropList.length; i++) {
-        if (cropList[i].isWildseed && options.skills.gatherer) {
-            cropList[i].produce.extra += 1;
-            cropList[i].produce.extraPerc += 0.2;
-        }
-		cropList[i].planted = planted(cropList[i]);
-		cropList[i].harvests = harvests(cropList[i].id);
-		cropList[i].seedLoss = seedLoss(cropList[i]);
-		cropList[i].fertLoss = fertLoss(cropList[i]);
-		cropList[i].profitData = profit(cropList[i]);
-        cropList[i].profit = cropList[i].profitData.profit;
-		cropList[i].averageProfit = perDay(cropList[i].profit);
-		cropList[i].averageSeedLoss = perDay(cropList[i].seedLoss);
-		cropList[i].averageFertLoss = perDay(cropList[i].fertLoss);
+function valueCrops(
+	cropList, 
+	gathererSkill, 
+	buySeed,
+	maxSeedMoney,
+	planted,
+	seeds,
+	fertilizerId,
+	agriSkill,
+	seasonLength,
+	fertilizerSource,
+	buyFert
+) {
+	for (const crop of cropList) {
+		if (crop.isWildseed && gathererSkill) {
+			crop.produce.extra += 1;
+			crop.produce.extraPerc += 0.2;
+		}
+		crop.planted = plant(
+			buySeed,
+			maxSeedMoney,
+			planted,
+			crop,
+			seeds
+		);
+		crop.harvests = harvests(fertilizerId, agriSkill, days, crop);
+		crop.seedLoss = seedLoss(crop, seeds, buySeed, maxSeedMoney, planted);
+		crop.fertLoss = fertLoss(crop, fertilizerId, fertilizerSource, buySeed, maxSeedMoney, planted, seeds);
+		crop.profitData = profit(crop, sell(crop), buySeed, buyFert);
+		crop.profit = crop.profitData.total;
+
+		crop.drawProfit = crop.profit;
+		crop.drawSeedLoss = crop.seedLoss;
+		crop.drawFertLoss = crop.fertLoss;
+
 		if (options.average) {
-			cropList[i].drawProfit = cropList[i].averageProfit;
-			cropList[i].drawSeedLoss = cropList[i].averageSeedLoss;
-			cropList[i].drawFertLoss = cropList[i].averageFertLoss;
+			crop.drawProfit = perDay(crop.profit, days);
+			crop.drawSeedLoss = perDay(crop.seedLoss, days);
+			crop.drawFertLoss = perDay(crop.fertLoss, days);
 		}
-		else {
-			cropList[i].drawProfit = cropList[i].profit;
-			cropList[i].drawSeedLoss = cropList[i].seedLoss;
-			cropList[i].drawFertLoss = cropList[i].fertLoss;
-		}
+		
 	}
+	return cropList;
 }
 
 /**
@@ -368,23 +514,17 @@ function valueCrops() {
  */
 function sortCrops() {
 	var swapped;
-    do {
-        swapped = false;
-        for (var i = 0; i < cropList.length - 1; i++) {
-            if (cropList[i].drawProfit < cropList[i + 1].drawProfit) {
-                var temp = cropList[i];
-                cropList[i] = cropList[i + 1];
-                cropList[i + 1] = temp;
-                swapped = true;
-            }
-        }
-    } while (swapped);
-
-
-	// console.log("==== SORTED ====");
-	for (var i = 0; i < cropList.length; i++) {
-		// console.log(cropList[i].drawProfit.toFixed(2) + "  " + cropList[i].name);
-	}
+	do {
+		swapped = false;
+		for (var i = 0; i < cropList.length - 1; i++) {
+			if (cropList[i].drawProfit < cropList[i + 1].drawProfit) {
+					var temp = cropList[i];
+					cropList[i] = cropList[i + 1];
+					cropList[i + 1] = temp;
+					swapped = true;
+			}
+		}
+	} while (swapped);
 }
 
 /**
@@ -467,6 +607,12 @@ function updateScaleAxis() {
 		.range([height*2, 0]);
 }
 
+function renderGraph_new() {
+	return;
+	for (const c of cropList) chart.cropBar(c);
+	chart.render_axis();
+}
+
 /**
  * Renders the graph.
  * This is called only when opening for the first time or when changing seasons/seeds.
@@ -495,14 +641,7 @@ function renderGraph() {
 		.enter()
 		.append("rect")
 			.attr("x", function(d, i) {
-				if (d.drawProfit < 0 && options.buySeed && options.buyFert)
-					return x(i) + barOffsetX;
-				else if (d.drawProfit < 0 && !options.buySeed && options.buyFert)
-					return x(i) + barOffsetX;
-				else if (d.drawProfit < 0 && options.buySeed && !options.buyFert)
-					return x(i) + barOffsetX;
-				else
-					return x(i) + barOffsetX;
+				return x(i) + barOffsetX;
 			})
 			.attr("y", function(d) {
 				if (d.drawProfit >= 0)
@@ -695,7 +834,7 @@ function renderGraph() {
 				}
 				tooltipTr = tooltipTable.append("tr");
 				tooltipTr.append("td").attr("class", "tooltipTdLeft").text("Duration:");
-				tooltipTr.append("td").attr("class", "tooltipTdRight").text(options.days + " days");
+				tooltipTr.append("td").attr("class", "tooltipTdRight").text(options.seasonLength + " days");
 				tooltipTr = tooltipTable.append("tr");
 				tooltipTr.append("td").attr("class", "tooltipTdLeft").text("Planted:");
 				tooltipTr.append("td").attr("class", "tooltipTdRight").text(d.planted);
@@ -717,7 +856,7 @@ function renderGraph() {
     					tooltipTr.append("td").attr("class", "tooltipTdLeft").text("Value (Normal):");
     					tooltipTr.append("td").attr("class", "tooltipTdRight").text(d.produce.price)
     						.append("div").attr("class", "gold");
-                        tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.ratioN*100).toFixed(0) + "%)");
+                        tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.n*100).toFixed(0) + "%)");
                     }
 					if (d.name != "Tea Leaves") {
                         if (!(d.isWildseed && options.skills.botanist)) {
@@ -725,19 +864,19 @@ function renderGraph() {
     						tooltipTr.append("td").attr("class", "tooltipTdLeft").text("Value (Silver):");
     						tooltipTr.append("td").attr("class", "tooltipTdRight").text(Math.trunc(d.produce.price * 1.25))
     							.append("div").attr("class", "gold");
-                            tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.ratioS*100).toFixed(0) + "%)");
+                            tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.s*100).toFixed(0) + "%)");
     						tooltipTr = tooltipTable.append("tr");
     						tooltipTr.append("td").attr("class", "tooltipTdLeft").text("Value (Gold):");
     						tooltipTr.append("td").attr("class", "tooltipTdRight").text(Math.trunc(d.produce.price * 1.5))
     							.append("div").attr("class", "gold");
-                            tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.ratioG*100).toFixed(0) + "%)");
+                            tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.g*100).toFixed(0) + "%)");
                         }
                         if ((!d.isWildseed && fertilizers[options.fertilizer].ratio >= 3) || (d.isWildseed && options.skills.botanist)) {
     						tooltipTr = tooltipTable.append("tr");
     						tooltipTr.append("td").attr("class", "tooltipTdLeft").text("Value (Iridium):");
     						tooltipTr.append("td").attr("class", "tooltipTdRight").text(d.produce.price * 2)
     							.append("div").attr("class", "gold");
-                            tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.ratioI*100).toFixed(0) + "%)");
+                            tooltipTr.append("td").attr("class", "tooltipTdRight").text("(" + (d.profitData.i*100).toFixed(0) + "%)");
                         }
 					}
 					tooltipTr = tooltipTable.append("tr");
@@ -1020,13 +1159,13 @@ function updateData() {
             element('number_days').set(56);
             if (element('current_day').get() > 56)
                 element('current_day').set(56);
-            options.days = 57 - element('current_day').get();
+            options.seasonLength = 57 - element('current_day').get();
         }
         else {
             element('number_days').set(28);
             if (element('current_day').get() > 28)
                   element('current_day').set(28);
-            options.days = 29 - element('current_day').get();
+            options.seasonLength = 29 - element('current_day').get();
         }
     } else {
         element('current_day').setAttribute('disabled', true);
@@ -1035,7 +1174,7 @@ function updateData() {
 
         if (element('number_days').get() > 100000)
             element('number_days').set(100000);
-        options.days = element('number_days').get();
+        options.seasonLength = element('number_days').get();
     }
 
 	options.seeds.pierre = element('check_seedsPierre').get();
@@ -1132,7 +1271,7 @@ function updateData() {
 	// Persist the options object into the URL hash.
 	window.location.hash = encodeURIComponent(serialize(options));
 
-	fetchCrops();
+	fetchCrops(options.season);
 	valueCrops();
 	sortCrops();
 }
@@ -1158,21 +1297,19 @@ function setValue(element, valueType, is_select, newValue) {
 const elements = {};
 
 function element(id) {
-	let element = elements[id];
+	if (elements[id]) return elements[id];
 	
-	if (!elements[id]) {
-		
-		element = document.getElementById(id);
-		const type = element.getAttribute('type');
-		const tag = element.tagName.toLowerCase();
-		const valueType = /(radio|checkbox)/gi.test(type) ? 'checked' : 'value';
-		const is_select = /sl-select/i.test(tag);
-	
-		element.get =()=> getValue(element, valueType, is_select);
-		element.set =(newValue)=> setValue(element, valueType, is_select, newValue);
+	const element = document.getElementById(id);
+	const type = element.getAttribute('type');
+	const tag = element.tagName.toLowerCase();
+	const valueType = /(radio|checkbox)/gi.test(type) ? 'checked' : 'value';
+	const is_select = /sl-select/i.test(tag);
 
-		elements[id] = element;
-	}
+	element.get =()=> getValue(element, valueType, is_select);
+	element.set =(newValue)=> setValue(element, valueType, is_select, newValue);
+
+	elements[id] = element;
+
 	return element;
 }
 
@@ -1215,6 +1352,7 @@ async function initial() {
 	optionsLoad();
 	updateData();
 	renderGraph();
+	renderGraph_new();
 }
 
 /**
@@ -1261,24 +1399,21 @@ function optionsLoad() {
     options.crossSeason = validBoolean(options.crossSeason);
     element('cross_season').set(options.crossSeason);
 
-    var daysMax = 0;
-    if (options.crossSeason)
-        daysMax = options.season === 4 ? MAX_INT : 56;
-    else
-        daysMax = options.season === 4 ? MAX_INT : 28;
+    var daysMax = options.crossSeason ? 56 : 28;
+	 if (options.season === 4) daysMax = MAX_INT;
 
-    options.days = validIntRange(1, daysMax, options.days);
+    options.seasonLength = validIntRange(1, daysMax, options.seasonLength);
     if (options.season === 4) {
-        element('number_days').set(options.days);
+        element('number_days').set(options.seasonLength);
     } 
     else {
         if (options.crossSeason) {
             element('number_days').set(56);
-            element('current_day').set(57 - options.days);
+            element('current_day').set(57 - options.seasonLength);
         }
         else {
             element('number_days').set(28);
-            element('current_day').set(29 - options.days);
+            element('current_day').set(29 - options.seasonLength);
         }
     }
 
@@ -1370,6 +1505,7 @@ function rebuild() {
 
 	updateData();
 	renderGraph();
+	renderGraph_new();
 }
 
 document.addEventListener('DOMContentLoaded', function() {

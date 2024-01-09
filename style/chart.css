@@ -1,0 +1,131 @@
+:root { --radius: 4px; }
+profit-chart {
+	background: hsl(33, 100%, 80%);
+	position: relative;
+	padding-bottom: .5rem;
+	padding-top: 3rem;
+	color: black;
+	--scale: calc(var(--ceiling) - var(--floor));
+	--zero: calc(100% - (var(--ceiling) / var(--scale) * 100%));
+	--real-zero: var(--zero);
+	--line: 2px;
+	display: block;
+}
+
+profit-chart .axis {
+	/* overflow-x: hidden; */
+	position: absolute;
+	inset: 0;
+	bottom: unset;
+	height: 2.5rem;
+	font-size: max(8px, .6rem);
+	line-height: calc(100% - (var(--line) / 2));
+	border-bottom: 1px solid currentColor;
+}
+
+profit-chart .axis .step {
+	width: 0;
+	height: 0;
+	transform: rotate(90deg) translateY(-.5em);
+	display: flex;
+	justify-content: end;
+	position: absolute;
+	left: calc(var(--zero) + ((var(--step) / var(--scale)) * 100%));
+	bottom: 0.75rem;
+}
+
+profit-chart .axis .step::before {
+	content: "";
+	display: block;
+	background: currentColor;
+	width: 0.5rem;
+	height: 1px;
+	position: absolute;
+	left: .25rem;
+	top: 0.5em;
+	transform: translateY(-50%);
+}
+
+profit-chart, profit-chart * {
+	transition: .5s;
+	box-sizing: border-box;
+}
+
+profit-chart .step:not(.visible) {
+	opacity: 0;
+}
+
+profit-chart .zero {
+	position: absolute;
+	inset: 0px;
+	top: 2rem;
+}
+
+profit-chart .zero .line {
+	position: absolute;
+	left: calc(var(--zero) - var(--line) / 2);
+	width: var(--line);
+	height: 100%;
+	background: #000;
+}
+
+.bar {
+	content: "";
+	height: 2rem;
+	position: relative;
+	margin-block: .5rem;
+	--profit: max(0, var(--sell) - var(--seed) - var(--fert));
+	--loss: min(0, var(--sell) - var(--seed) - var(--fert));
+
+	--seed-length:		calc(var(--seed) / var(--scale) * 100%);
+	--fert-length:		calc(var(--fert) / var(--scale) * 100%);
+	--sell-length:		calc(var(--sell) / var(--scale) * 100%);
+	--loss-length:		calc(var(--loss) / var(--scale) * -100%);
+	--profit-length:	calc(var(--profit) / var(--scale) * 100%);
+}
+
+.bar > div {
+	width: var(--length);
+	top: 2px;
+	bottom: 1px;
+	position: absolute;
+	left: calc(var(--zero) - var(--offset));
+	content: "";
+	/* --offset defined later */
+}
+
+.bar > .seed { background: #FFE3AC; }
+.bar > .fert { background: #c7cce5; }
+.bar > .sell { border: 2px solid black; }
+.bar > .loss { background: #d60000; opacity: 64%; }
+.bar > .profit { background: #36ac00; opacity: 70%; }
+
+.bar > .seed {
+	--length: var(--seed-length);
+	--offset: calc(var(--seed-length) + var(--fert-length));
+	border-top-left-radius: calc(var(--radius) * .5);
+	border-bottom-left-radius: var(--radius);
+}
+.bar > .fert {
+	--length: var(--fert-length);
+	--offset: var(--fert-length);
+}
+.bar > .sell {
+	--length: var(--sell-length);
+	--offset: calc(var(--seed-length) + var(--fert-length));
+	top: 0;
+	bottom: 0;
+	border-radius: var(--radius);
+	box-shadow: inset -1px 2px 0px #fff;
+	z-index: 1;
+}
+.bar > .loss {
+	--length: var(--loss-length);
+	--offset: var(--loss-length);
+}
+.bar > .profit {
+	--length: var(--profit-length);
+	--offset: 0%;
+	border-top-right-radius: calc(var(--radius) * .5);
+	border-bottom-right-radius: var(--radius);
+}

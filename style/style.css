@@ -86,7 +86,7 @@ body {
 	border: var(--border) solid var(--input-primary);
 	border-top-color: hsl(30, 80%, 70%);
 	border-bottom-color: hsl(30, 70%, 50%);
-	min-width: 14rem;
+	min-width: 10rem;
 	flex: 1;
 	position: relative;
 	outline: var(--border) solid hsla(30, 90%, 30%, .7);
@@ -97,7 +97,7 @@ body {
 .card::after {
 	z-index: -1;
 	border-radius: 1px;
-	content: "";
+	content: "d";
 	display: block;
 	position: absolute;
 	inset: calc(var(--border) * -2);

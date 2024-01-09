@@ -5,7 +5,7 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		<meta content="A Stardew Valley crop profits calculator and visualizer." />
 		<title>Stardew Profits</title>
-		<meta content="width=device-width, initial-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 		<link rel="stylesheet" type="text/css" href="style/style.css" />
 		<link rel="shortcut icon" type="image/png" href="img/ancientfruit.png">
@@ -26,6 +26,23 @@
 
 		<script src="js/crops.js"> </script>
 		<script src="js/data.js"> </script>
+		<script src="js/chart-alt.js"> </script>
+
+		<profit-chart id="chart" style="--ceiling:90;--floor:-60;">
+			<div class="axis"></div>
+			<script src="js/chart.js"></script>
+			<template id="bar_template">
+				<div class="bar" style="--seed:46;--sell:132;" data-crop="">
+					<div class="fert"></div>
+					<div class="seed"></div>
+					<div class="loss"></div>
+					<div class="profit"></div>
+					<div class="sell"></div>
+				</div>
+			</template>
+		</profit-chart>
+		<link rel="stylesheet" href="/style/chart.css">
+
 		<div class="graph-scroll-container">
 			<div class="graph glass card">
 				<script src="js/main.js"> </script>

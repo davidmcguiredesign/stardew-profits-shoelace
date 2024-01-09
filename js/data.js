@@ -3,7 +3,7 @@ var options = {
 	"produce" : 0,
 	"planted": 1,
     "maxSeedMoney": 0,
-	"days": 28,
+	"seasonLength": 28,
 	"fertilizer": 2,
 	"level": 0,
 	"season": 4,
@@ -230,3 +230,18 @@ var seasons = [
 		]
 	}
 ];
+
+// Attach cross-season data to crop objects
+for (let s in seasons) {
+	const thisSeason = seasons[s];
+	const nextSeason = seasons[s < 3 ? s + 1 : 0];
+
+	for (const crop of thisSeason.crops) {
+		crop.plantableDays = thisSeason.duration;
+
+		if (s == 4) continue;
+		if (!nextSeason.crops.some(c=> c.name == crop.name)) continue;
+
+		crop.plantableDays += nextSeason.duration;
+	}
+}

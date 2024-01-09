@@ -13,30 +13,28 @@
 </head>
 <body>
 
-<div id="chart" style="--ceiling:90;--floor:-60;--fert:12;">
-	<div id="axis">
-		<div class="steps"></div>
-	</div>
+<profit-chart id="chart" style="--ceiling:90;--floor:-60;--fert:12;">
+	<div class="axis"></div>
 	
-	<div class="bar" style="--seed:46;--sell:132;">
-		<div class="fert"></div>
-		<div class="seed"></div>
-		<div class="loss"></div>
-		<div class="profit"></div>
-		<div class="sell"></div>
-	</div>
-	<div class="bar" style="--seed:33;--sell:40;">
-		<div class="fert"></div>
-		<div class="seed"></div>
-		<div class="loss"></div>
-		<div class="profit"></div>
-		<div class="sell"></div>
-	</div>
+	<template id="bar_template">
+		<div class="bar" style="--seed:46;--sell:132;" data-crop="">
+			<div class="fert"></div>
+			<div class="seed"></div>
+			<div class="loss"></div>
+			<div class="profit"></div>
+			<div class="sell"></div>
+		</div>
+	</template>
 	
-	<div id="zero">
+	<div class="zero">
 		<div class="line"></div>
 	</div>
-</div>
+</profit-chart>
+
+<script>
+	bar('amaranth', 132, 46);
+	bar('yam', 40, 33);
+</script>
 
 <style>
 	* {
@@ -57,7 +55,7 @@
 		padding: 1rem;
 	}
 
-	#chart {
+	profit-chart {
 		background: hsl(33, 100%, 80%);
 		position: relative;
 		padding-bottom: .5rem;
@@ -69,20 +67,18 @@
 		display: block;
 	}
 
-	#axis {
+	profit-chart .axis {
 		/* overflow-x: hidden; */
 		position: absolute;
 		inset: 0;
 		bottom: unset;
 		height: 2.5rem;
-	}
-
-	:is(#axis) .steps {
 		font-size: max(8px, .6rem);
 		line-height: calc(100% - (var(--line) / 2));
+		border-bottom: 1px solid currentColor;
 	}
 	
-	:is(#axis) .step {
+	profit-chart .axis .step {
 		width: 0;
 		height: 0;
 		transform: rotate(90deg) translateY(-.5em);
@@ -93,22 +89,33 @@
 		bottom: 0.75rem;
 	}
 
-	#chart, #chart * {
+	profit-chart .axis .step::before {
+		content: "";
+		display: block;
+		background: currentColor;
+		width: 0.5rem;
+		height: 1px;
+		position: absolute;
+		left: .25rem;
+		top: 0.5em;
+		transform: translateY(-50%);
+	}
+
+	profit-chart, profit-chart * {
 		transition: .5s;
 	}
 
-	#axis .step:not(.visible) {
+	profit-chart .step:not(.visible) {
 		opacity: 0;
 	}
 
-	#zero {
-		--line: 2px;
+	profit-chart .zero {
 		position: absolute;
 		inset: 0px;
 		top: 2rem;
 	}
 	
-	#zero .line {
+	profit-chart .zero .line {
 		position: absolute;
 		left: calc(var(--zero) - var(--line) / 2);
 		width: var(--line);
