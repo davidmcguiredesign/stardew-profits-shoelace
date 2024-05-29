@@ -249,24 +249,32 @@ input[type=checkbox] {
     filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=0, Color='#000')";
 }
 
-.footer p {
+.footer nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 8px;
+	justify-content: space-evenly;
 	color: #eeeeee;
 	font: 0.875em sans-serif;
 	opacity: 0.75;
 }
 
+.footer nav > * {
+	white-space: nowrap;
+}
+
 .footer a {
-	color: #eeeeee;
+	display: inline-block;
+	color: #eeeeee !important;
 	text-decoration: none;
 }
 
 .footer a:hover {
-	color: #eeeeee;
 	text-decoration: underline;
 }
 
 .footer a:visited {
-	color: #eeeeee;
 	text-decoration: none;
 }
 
