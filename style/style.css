@@ -47,16 +47,17 @@ body {
 	background-color: #333333;
 	border-radius: 8px;
 	padding: 8px;
-	width: 900px;
     -webkit-filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.75));
     -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
     filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 8px;
 }
 
 .options table {
 	margin: 4px auto;
-	flex-grow: inherit;
+	width: 100%;
 }
 
 .options table tr td {
