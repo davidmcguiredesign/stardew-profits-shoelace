@@ -360,7 +360,7 @@
 	/* --sl-input-height-medium: 2.5rem; */
 	/* --sl-input-height-large: 3.125rem; */
 
-	--sl-input-background-color: var(--input-primary);
+	--sl-input-background-color: var(--cedar);
 	/* --sl-input-background-color-hover: var(--sl-input-background-color); */
 	/* --sl-input-background-color-focus: var(--sl-input-background-color); */
 	/* --sl-input-background-color-disabled: var(--sl-color-neutral-100); */
@@ -484,8 +484,8 @@ sl-button.square {
 }
 
 sl-button[variant="default"] {
-	--sl-color-neutral-0: var(--input-primary);
-	--sl-color-neutral-700: var(--input-dark);
+	--sl-color-neutral-0: var(--cedar);
+	--sl-color-neutral-700: var(--ring);
 }
 
 /* raise and lower */
@@ -495,19 +495,19 @@ sl-input,
 sl-select,
 .raised,
 .lowered {
-	--inner-top: var(--input-lighten);
-	--inner-left: var(--input-darken);
-	--inner-bottom: var(--input-darken);
-	--inner-right: var(--input-lighten);
+	--inner-top: var(--cedar-highlight);
+	--inner-left: var(--cedar-shaded);
+	--inner-bottom: var(--cedar-shaded);
+	--inner-right: var(--cedar-highlight);
 
-	--outer-top: var(--input-dark);
-	--outer-left: var(--input-dark);
-	--outer-bottom: var(--input-dark);
-	--outer-right: var(--input-dark);
+	--outer-top: var(--ring);
+	--outer-left: var(--ring);
+	--outer-bottom: var(--ring);
+	--outer-right: var(--ring);
 
 	--drop-top: transparent;
-	--drop-left: var(--input-shadow);
-	--drop-bottom: var(--input-shadow);
+	--drop-left: var(--warm-shadow);
+	--drop-bottom: var(--warm-shadow);
 	--drop-right: transparent;
 
 	--u: var(--depth);
@@ -519,28 +519,20 @@ sl-select::part(form-control-input),
 .raised,
 .lowered {
 	position: relative;
-	border: var(--depth) solid transparent;
-	border-top-color: var(--inner-top);
-	border-left-color: var(--inner-left);
-	border-bottom-color: var(--inner-bottom);
-	border-right-color: var(--inner-right);
 	box-shadow:
-		calc(var(--u)*  0  )		calc(var(--u)* -1.0)	0		calc(var(--u)*  0  )		var(--outer-top),
-		calc(var(--u)* -1.0)		calc(var(--u)*  0  )	0		calc(var(--u)*  0  )		var(--outer-left),
-		calc(var(--u)*  0  )		calc(var(--u)*  1.0)	0		calc(var(--u)*  0  )		var(--outer-bottom),
-		calc(var(--u)*  1.0)		calc(var(--u)*  0  )	0		calc(var(--u)*  0  )		var(--outer-right),
-	
-		calc(var(--u)*  1.5)		calc(var(--u)* -2.5)	0		calc(var(--u)* -0.5)		var(--drop-top),
-		calc(var(--u)* -2.5)		calc(var(--u)*  1.5)	0		calc(var(--u)* -0.5)		var(--drop-left),
-		calc(var(--u)* -1.5)		calc(var(--u)*  2.5)	0		calc(var(--u)* -0.5)		var(--drop-bottom),
-		calc(var(--u)*  2.5)		calc(var(--u)*  1.5)	0		calc(var(--u)* -0.5)		var(--drop-right)
+				calc( 0 * var(--u)) calc(-1 * var(--u)) 0 0 var(--outer-top),
+				calc( 0 * var(--u)) calc( 1 * var(--u)) 0 0 var(--outer-bottom),
+				calc( 1 * var(--u)) calc( 0 * var(--u)) 0 0 var(--outer-right),
+				calc(-1 * var(--u)) calc( 0 * var(--u)) 0 0 var(--outer-left),
+		inset	calc( 1 * var(--u)) calc(-1 * var(--u)) 0 0 var(--inner-bottom),
+		inset	calc(-1 * var(--u)) calc( 1 * var(--u)) 0 0 var(--inner-top)
 	;
 	z-index: 1;
 }
 
 .raised,
 .lowered {
-	background: var(--input-primary);
+	background: var(--cedar);
 }
 
 .row {
@@ -564,10 +556,10 @@ sl-select:not(:hover):not(:focus):not(:focus-within) {
 
 sl-input,
 .lowered {
-	--inner-top: var(--input-darken);
-	--inner-left: var(--input-lighten);
-	--inner-bottom: var(--input-lighten);
-	--inner-right: var(--input-darken);
+	--inner-top: var(--cedar-shaded);
+	--inner-left: var(--cedar-highlight);
+	--inner-bottom: var(--cedar-highlight);
+	--inner-right: var(--cedar-shaded);
 
 	--outer-left: hsla(0, 100%, 100%, 0.6);
 	--outer-bottom: hsla(0, 100%, 100%, 0.6);

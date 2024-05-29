@@ -17,6 +17,7 @@
 
 	</head>
 	<body>
+
 		<div class="background"></div>
 
 		<div class="title">
@@ -24,15 +25,145 @@
 			<img src="./img/title_2.png" alt="Profits" />
 		</div>
 
-		<script src="js/crops.js"> </script>
-		<script src="js/data.js"> </script>
-		<div class="graph-scroll-container">
-			<div class="graph glass card">
-				<script src="js/main.js"> </script>
+		<div id="chart" style="--ceiling:90;--floor:-60;--fert:-12;">
+			<div class="axis">
+				<div class="steps"></div>
+			</div>
+
+			<template id="bar">
+				<div class="bar" data-crop="" style="--seed:0;--sell:0;">
+					<img src="" alt="">
+					<div class="sell"></div>
+					<div class="seed"></div>
+					<div class="fert"></div>
+					<div class="loss"></div>
+					<div class="profit"></div>
+				</div>
+			</template>
+
+			<div class="zero">
+				<div class="line"></div>
 			</div>
 		</div>
 
-		<form id="options" class="options">
+		<div id="info" class="profitable profit-total">
+			<template id="panel">
+				<div class="panel">
+					<h3>Strawberry</h3>
+					<div class="net">
+						<div class="total">
+							total profit
+						</div>
+						<div class="total">
+							<output data-for="total">+629.73</output><img src="/img/gold.png" alt="">
+						</div>
+						<div class="daily">
+							per day
+						</div>
+						<div class="daily">
+							<output data-for="daily">+22.49</output><img src="/img/gold.png" alt="">
+						</div>
+					</div>
+				</div>
+				<link rel="stylesheet" href="/style/info-panel.css"/>
+			</template>
+		</div>
+
+		<link rel="stylesheet" href="/style/chart.css">
+		<script src="/js/crops.js"> </script>
+		<script src="/js/data.js"> </script>
+		<script src="/js/main.js"></script>
+		<script src="/js/ui.1.js"></script>
+		<script>
+			const newCropList = [
+				{
+					name: 'Broccolli',
+					icon: 'gold.png',
+					planted: 1,
+					seedLoss: -55,
+					grossProfit: 90,
+					netProfit: 30,
+				},{
+					name: 'Spinach',
+					icon: 'gold.png',
+					planted: 1,
+					seedLoss: -40,
+					grossProfit: 120,
+					netProfit: 90,
+				}
+			];
+			fetchCrops();
+			valueCrops();
+			drawCrops(cropList);
+		</script>
+
+		<link rel="stylesheet" href="/style/ui.css">
+		<form id="options">
+			<div class="calendar tab card">
+				<div class="radio-buttons lowered">
+					<label>
+						<input type="radio" name="calendar" value="0" />
+						<span>1 month</span>
+					</label>
+					<label>
+						<input type="radio" name="calendar" value="1" checked />
+						<span>2 months</span>
+					</label>
+					<label>
+						<input type="radio" name="calendar" value="2" />
+						<span>Greenhouse</span>
+					</label>
+				</div>
+				<div class="dates radio-buttons lowered">
+					<template id="date">
+						<label><input type="radio" name="date" /><span></span></label>
+					</template>
+					<script>
+						const dateTemplate = document.querySelector('template#date').content.firstElementChild;
+						const calendar = document.querySelector('.calendar .dates');
+
+						let day = 0;
+						for (const month of ['Spring', 'Summer', 'Fall', 'Winter']) {
+							const heading = document.createElement('h5');
+							heading.textContent = month;
+							calendar.append(heading);
+
+							while (++day % 29) {
+								const date = dateTemplate.cloneNode(true);
+								date.querySelector('span').textContent = day % 29;
+								date.querySelector('input').value = day - 1;
+								calendar.append(date);
+							}
+						}
+					</script>
+				</div>
+			</div>
+
+			<div>Produce type: raw</div>
+			<div>Number of crops: 1</div>
+			<div>Budget: N</div>
+			<div>Average profit: Y</div>
+			<div>Get seeds from Pierre: Y</div>
+			<div>Get seeds from Joja: Y</div>
+			<div>Get seeds from special vendors: Y</div>
+		</form>
+
+		<script>
+			const optForm = document.getElementById('options');
+			for (const input of optForm.querySelectorAll('input')) {
+				input.addEventListener('change', (e)=> {
+					console.log({[e.target.name]: e.target.value});
+					new FormData(optForm);
+				});
+			}
+			optForm.addEventListener('formdata', e=>{
+				console.groupCollapsed('form')
+				for (const [key, value] of e.formData) console.log(key, value);
+				console.groupEnd();
+			});
+		</script>
+
+		<!-- <form id="options" class="options">
 			<div class="card glass r-4">
 				<sl-select label="Season" id="select_season" value="1" sl-event="change" sl-action="rebuild">
 					<sl-option value="1" id="season_0">Spring</sl-option>
@@ -124,12 +255,13 @@
 
 			</div>
 
-		</form>
+		</form> -->
 
 		<div class="footer">
-			<p><a href="http://stardewvalley.net/" target="_blank">Stardew Valley v1.5.4</a> &copy; <a href="https://twitter.com/ConcernedApe" target="_blank">ConcernedApe</a> | Original website designed by <a href="https://twitter.com/thorinair_music" target="_blank">Thorinair; updated by David</a> | v1.5.0</p>
+			<p><a href="http://stardewvalley.net/" target="_blank">Stardew Valley v1.5.4</a> &copy; <a href="https://twitter.com/ConcernedApe" target="_blank">ConcernedApe</a> | Original website written by <a href="https://twitter.com/thorinair_music" target="_blank">Thorinair; updated by David</a> | v1.5.0</p>
 		</div>
 
 		<script src="js/time.js"> </script>
+
 	</body>
 </html>

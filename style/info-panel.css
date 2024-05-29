@@ -1,0 +1,32 @@
+:root {
+	--color-profit: #36ac00;
+}
+img[src*=gold] {
+	height: .75em;
+	width: auto;
+	margin-left: .5ch;
+}
+.panel {
+	color: hsl(30, 50%, 20%);
+	background: linear-gradient(to bottom,
+		hsla(45, 100%, 80%, 0),
+		hsla(45, 100%, 80%, 0) 20%,
+		hsla(30, 100%, 70%, .3) 20%,
+		hsla(30, 100%, 70%, .3) 60%,
+		hsla(30, 100%, 65%, .4) 60%,
+		hsla(30, 100%, 65%, .4) 100%
+	), hsl(40, 100%, 75%);
+	padding: 1rem;
+	max-width: 30rem;
+}
+.net {
+	display: grid;
+	grid-template-columns: auto auto;
+}
+.profitable .net output {
+	color: var(--color-profit);
+}
+.profit-total .net .total,
+.profit-daily .net .daily {
+	font-size: 1.5rem;
+}

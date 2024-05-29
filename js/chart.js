@@ -1,4 +1,4 @@
-function set_cssVariable(element, key, value, prefix='--') {
+function set_cssProp(element, key, value, prefix='--') {
 	let existing = element.getAttribute('style') || '';
 	if (existing.includes(key)) {
 		let regex = `(?<=${prefix}${key}:)[^;]+(?=;)`;
@@ -11,7 +11,7 @@ function set_cssVariable(element, key, value, prefix='--') {
 	return element;
 }
 
-function get_cssVariable(element, key, prefix='--') {
+function get_cssProp(element, key, prefix='--') {
 	let existing = element.getAttribute('style') || '';
 
 	existing = existing.match(new RegExp(`(?<=${prefix}${key}:)[^;]+(?=;)`));
@@ -32,8 +32,8 @@ function bar(cropName) {
 		bar.append(part);
 	}
 
-	bar.seed =(value)=> set_cssVariable(bar, 'seed', value);
-	bar.sell =(value)=> set_cssVariable(bar, 'sell', value);
+	bar.seed =(value)=> set_cssProp(bar, 'seed', value);
+	bar.sell =(value)=> set_cssProp(bar, 'sell', value);
 
 	document.getElementById('chart').append(bar);
 	bars.set(cropName, bar);
@@ -75,10 +75,10 @@ function axis() {
 
 	axis.ceiling =(newValue=null, render=true)=> {
 		if (newValue===null || newValue===undefined)
-			return get_cssVariable(axis.parentElement,'ceiling');
+			return get_cssProp(axis.parentElement,'ceiling');
 
 		console.log(axis);
-		set_cssVariable(axis.parentElement,'ceiling', newValue);
+		set_cssProp(axis.parentElement,'ceiling', newValue);
 		if (render) axis.render();
 		
 		return axis;
@@ -86,10 +86,10 @@ function axis() {
 
 	axis.floor =(newValue=null, render=true)=> {
 		if (newValue===null || newValue===undefined)
-			return get_cssVariable(axis.parentElement,'floor');
+			return get_cssProp(axis.parentElement,'floor');
 
 		console.log(axis);
-		set_cssVariable(axis.parentElement,'floor', newValue);
+		set_cssProp(axis.parentElement,'floor', newValue);
 		if (render) axis.render();
 		
 		return axis;
@@ -101,7 +101,7 @@ function axis() {
 
 		let newStep = document.createElement('div');
 		newStep.classList.add('step');
-		set_cssVariable(newStep, 'step', int);
+		set_cssProp(newStep, 'step', int);
 		axis.querySelector('.steps').append(newStep);
 		newStep.setAttribute('axis-step', int);
 		newStep.innerText = int;
