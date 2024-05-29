@@ -4,6 +4,7 @@ body {
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
+	margin: 0;
 }
 
 .title {
@@ -39,50 +40,83 @@ body {
 }
 
 .options {
-	margin: auto;
+	margin-inline: auto;
 	margin-top: 8px;
 	margin-bottom: 8px;
 	font: 0.875em sans-serif;
 	color: #eeeeee;
-	background-color: #333333;
-	border-radius: 8px;
-	padding: 8px;
     -webkit-filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.75));
     -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
     filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 	gap: 8px;
+	max-width: 900px;
+	padding-inline: 8px;
+	column-fill: balance-all;
 }
 
-.options table {
-	margin: 4px auto;
-	width: 100%;
+@media (min-width: 480px) {
+	.options {
+		columns: 2;
+	}
 }
 
-.options table tr td {
+@media (min-width: 720px) {
+	.options {
+		columns: 3;
+	}
+}
+
+.related {
+	margin-bottom: 8px;
+	margin-inline: auto;
+	break-inside: avoid;
+	background-color: #333333;
+	border-radius: 8px;
+	padding: 8px;
+}
+
+.related .related {
+	padding-inline-start: 16px;
+	padding-inline-end: 0;
+	padding-top: 0;
+}
+
+.checkset,
+.in {
+	margin-bottom: 8px;
+}
+
+.related > :last-child {
+	margin-bottom: 0;
+}
+
+.in {
+	display: block;
 	padding: 4px;
 	background-color: #222222;
 	border-radius: 4px;
 }
 
-.options table tr .sub {
-    background-color: transparent;
-    padding: 0px;
+.in .label {
+	display: block;
 }
 
-.options table tr td .subt {
-    background-color: transparent;
-    margin: 0 auto;
-    margin-left: 16px;
-    margin-top: -2px;
-    margin-bottom: -2px;
-    width: -webkit-fill-available;
+.in :is(input,select) + .label {
+	display: inline;
 }
 
-.options table tr td .subt td {
-    background-color: #181818;
-    margin: 0px;
+.checkset .in {
+	margin-bottom: 1px;
+}
+
+.checkset .in:not(:first-of-type) {
+	border-start-start-radius: 0;
+	border-start-end-radius: 0;
+}
+
+.checkset .in:not(:last-of-type) {
+	border-end-start-radius: 0;
+	border-end-end-radius: 0;
 }
 
 #tdhelp {
