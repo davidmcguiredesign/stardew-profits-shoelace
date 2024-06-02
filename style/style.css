@@ -1,3 +1,59 @@
+* {
+	box-sizing: border-box;
+}
+
+:root {
+	--natural-h: 42;
+	--natural: #FFD686;
+	--natural-shine: #FFFFFFBB;
+	--natural-shade: #a76f0096;
+
+	--stain: #E18F14;
+	--stain-shine: #FFBB33;
+	--stain-shade: #813E0088;
+
+	--painted: hsl(29, 76%, 22%);
+	--paint-width: 2.5px;
+	--paint-width-n: calc(var(--paint-width) * -1);
+	--ui: 2rem;
+
+	--natural-inner-up:
+		/* inner upper */ inset var(--paint-width-n) var(--paint-width) 0 var(--natural-shine),
+		/* inner lower */ inset var(--paint-width) var(--paint-width-n) 0 var(--stain-shine)
+		;
+
+	--natural-inner-down:
+		/* inner upper */ inset var(--paint-width-n) var(--paint-width) 0 var(--natural-shade),
+		/* inner lower */ inset var(--paint-width) var(--paint-width-n) 0 var(--stain-shine)
+		;
+
+	--natural-outer-down:
+		/* outer right */ var(--paint-width)   0 0 var(--painted),
+		/* outer left */ var(--paint-width-n) 0 0 var(--natural-shine),
+		/* outer lower */ 0 var(--paint-width)   0 var(--natural-shine),
+		/* outer upper */ 0 var(--paint-width-n) 0 var(--painted)
+		;
+
+	--painted-outer:
+		/* outer right */ var(--paint-width)   0 0 var(--painted),
+		/* outer left */ var(--paint-width-n) 0 0 var(--painted),
+		/* outer lower */ 0 var(--paint-width)   0 var(--painted),
+		/* outer upper */ 0 var(--paint-width-n) 0 var(--painted)
+		;
+
+	--stain-inner-up:
+		/* inner lower */ inset var(--paint-width) var(--paint-width-n) 0 var(--stain-shade),
+		/* outer upper */ inset var(--paint-width-n) var(--paint-width) 0 var(--stain-shine)
+		;
+
+	--stain-inner-down:
+		/* outer upper */ inset var(--paint-width-n) var(--paint-width) 0 var(--stain-shade),
+		/* inner lower */ inset var(--paint-width) var(--paint-width-n) 0 var(--stain-shine)
+		;
+
+	font-family: 'Exo 2', sans-serif;
+}
+
 body {
 	background: #000000 no-repeat center top fixed;
 	-webkit-background-size: cover;
@@ -5,6 +61,10 @@ body {
 	-o-background-size: cover;
 	background-size: cover;
 	margin: 0;
+}
+
+input, select, button {
+	font: inherit;
 }
 
 .title {
@@ -43,11 +103,6 @@ body {
 	margin-inline: auto;
 	margin-top: 8px;
 	margin-bottom: 8px;
-	font: 0.875em sans-serif;
-	color: #eeeeee;
-    -webkit-filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.75));
-    -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
-    filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=0, OffY=2, Color='#000')";
 	gap: 8px;
 	max-width: 900px;
 	padding-inline: 8px;
@@ -70,8 +125,9 @@ body {
 	margin-bottom: 8px;
 	margin-inline: auto;
 	break-inside: avoid;
-	background-color: #333333;
-	border-radius: 8px;
+	background-color: var(--natural);
+	box-shadow: var(--natural-inner-up), var(--painted-outer);
+	border-radius: 0;
 	padding: 8px;
 }
 
@@ -91,18 +147,75 @@ body {
 }
 
 .in {
-	display: block;
+	display: grid;
+	align-items: center;
+	grid-auto-columns: max-content;
+	grid-auto-flow: row;
 	padding: 4px;
-	background-color: #222222;
-	border-radius: 4px;
+	border-radius: 0;
 }
 
 .in .label {
 	display: block;
+	padding-bottom: .2em;
 }
 
-.in :is(input,select) + .label {
+.in .label + :is(input, select) {
+	border-radius: 0;
+	height: var(--ui);
+	background: var(--stain);
+	color: black;
+	box-shadow: var(--natural-outer-down), var(--stain-inner-down);
+	padding-inline: .5rem;
+	padding-bottom: .3em;
+	margin-top: .25em;
+	&:focus-visible {
+		outline: var(--paint-width) solid var(--painted)
+	}
+}
+
+.in input[type="checkbox"] {
+	position: relative;
+	width: 1.25rem;
+	height: 1.25rem;
+	margin: .5rem;
+	&::before {
+		display: block;
+		text-align: center;
+		content: "";
+		background: var(--natural);
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		box-shadow: var(--natural-outer-down), var(--natural-inner-down);
+	}
+	&:checked::before {
+		background: var(--stain);
+		box-shadow: var(--natural-outer-down), var(--stain-inner-down);
+		content: "✔";
+	}
+}
+
+.in input + .label {
+	grid-column: 2;
 	display: inline;
+}
+
+.in:has( :disabled) .label {
+	opacity: .5;
+}
+
+.in :is(input, select):disabled {
+	background: var(--natural);
+	color: var(--natural-shade);
+	box-shadow: var(--natural-outer-down);
+	opacity: .7;
+}
+
+.in input[type="checkbox"]:disabled::before {
+	box-shadow: var(--natural-outer-down);
+	background: var(--natural);
+	color: var(--natural-shade);
 }
 
 .checkset .in {
@@ -174,9 +287,6 @@ input[type=number]:hover::-webkit-inner-spin-button {
     padding: 4px;
     position: relative;
     right: -4px;
-}
-input:disabled {
-    color: #888888;
 }
 
 select {
