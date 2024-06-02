@@ -68,6 +68,22 @@ function formatNumber(num) {
     return x1 + x2;
 }
 
+/**
+ * Round a number to an arbitrary precision, dealing with JS float errors if necessary.
+ * @param {Number} num The number to round
+ * @param {Number} toNearest The precision to which the number should be rounded
+ * @returns {Number}
+ */
+function round( num, toNearest = 0.01 ) {
+	const scaled = num / toNearest
+	const rounded = Math.round( scaled )
+	const restored = rounded * toNearest
+	const places = restored.toString().replace( /^\d*\./, '' ).length
+	const trimmed = restored.toFixed( places )
+
+	return parseFloat( trimmed )
+}
+
 /*
  * Calculates the maximum number of harvests for a crop, specified days, season, etc.
  * @param cropID The ID of the crop to calculate. This corresponds to the crop number of the selected season.
@@ -560,84 +576,58 @@ function sortCrops() {
 	}
 }
 
+function getMaxProfit( array ) {
+	const buffer = 99
+	const precision = 0.01
+	return d3.max( array, function ( { drawProfit, seedLoss, drawSeedLoss, fertLoss, drawFertLoss } ) {
+		if ( drawProfit >= 0 ) {
+			return round( drawProfit + buffer );
+		}
+		else {
+			var profit = drawProfit;
+			if ( options.buySeed ) {
+				if ( seedLoss < profit )
+					profit = drawSeedLoss;
+			}
+			if ( options.buyFert ) {
+				if ( fertLoss < profit )
+					profit = drawFertLoss;
+			}
+			return round( -profit + buffer );
+		}
+	} )
+}
+
 /*
  * Updates the X D3 scale.
  * @return The new scale.
  */
 function updateScaleX() {
 	return d3.scale.ordinal()
-		.domain(d3.range(seasons[4].crops.length))
-		.rangeRoundBands([0, width]);
+		.domain( d3.range( seasons[4].crops.length ) )
+		.rangeRoundBands( [0, width] );
 }
 
-/*
+/**
  * Updates the Y D3 scale.
  * @return The new scale.
  */
 function updateScaleY() {
 	return d3.scale.linear()
-		.domain([0, d3.max(cropList, function(d) {
-			if (d.drawProfit >= 0) {
-				return (~~((d.drawProfit + 99) / 100) * 100);
-			}
-			else {
-				var profit = d.drawProfit;
-				if (options.buySeed) {
-					if (d.seedLoss < profit)
-						profit = d.drawSeedLoss;
-				}
-				if (options.buyFert) {
-					if (d.fertLoss < profit)
-						profit = d.drawFertLoss;
-				}
-				return (~~((-profit + 99) / 100) * 100);
-			}
-		})])
-		.range([height, 0]);
+		.domain( [0, getMaxProfit( cropList )] )
+		.range( [height, 0] );
 }
 
-/*
+/**
  * Updates the axis D3 scale.
  * @return The new scale.
  */
 function updateScaleAxis() {
 	return d3.scale.linear()
-		.domain([
-			-d3.max(cropList, function(d) {
-				if (d.drawProfit >= 0) {
-					return (~~((d.drawProfit + 99) / 100) * 100);
-				}
-				else {
-					var profit = d.drawProfit;
-					if (options.buySeed) {
-						if (d.seedLoss < profit)
-							profit = d.drawSeedLoss;
-					}
-					if (options.buyFert) {
-						if (d.fertLoss < profit)
-							profit = d.drawFertLoss;
-					}
-					return (~~((-profit + 99) / 100) * 100);
-				}
-			}),
-			d3.max(cropList, function(d) {
-				if (d.drawProfit >= 0) {
-					return (~~((d.drawProfit + 99) / 100) * 100);
-				}
-				else {
-					var profit = d.drawProfit;
-					if (options.buySeed) {
-						if (d.seedLoss < profit)
-							profit = d.drawSeedLoss;
-					}
-					if (options.buyFert) {
-						if (d.fertLoss < profit)
-							profit = d.drawFertLoss;
-					}
-					return (~~((-profit + 99) / 100) * 100);
-				}
-			})])
-		.range([height*2, 0]);
+		.domain( [
+			-getMaxProfit( cropList ),
+			getMaxProfit( cropList )] )
+		.range( [height * 2, 0] );
 }
 
 /*
