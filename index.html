@@ -27,7 +27,7 @@
 		<div class="related" comment="season options">
 
 			<label class="in">
-				<span class="label">Season:</span>
+				<span class="label">Season</span>
 				<select id="select_season" onChange="rebuild()">
 					<option value="0" id="season_0" selected="true">Spring</option>
 					<option value="1" id="season_1">Summer</option>
@@ -43,12 +43,12 @@
 			</label>
 
 			<label class="in" id="current_day_row">
-				<span class="label">Current Day:</span>
+				<span class="label">Current Day</span>
 				<input type="number" id="current_day" value="1" onChange="refresh()" />
 			</label>
 
 			<label class="in" id="number_days_row">
-				<span class="label">Number of Days:</span>
+				<span class="label">Number of Days</span>
 				<input type="number" id="number_days" value="28" onChange="refresh()" />
 			</label>
 
@@ -56,12 +56,12 @@
 
 		<div class="related" comment="selling options">
 			<label class="in">
-				<span class="label">Crops planted:</span>
+				<span class="label">Crops planted</span>
 				<input type="number" id="number_planted" value="1" onChange="refresh()" />
 			</label>
 
 			<label class="in">
-				<span class="label">Produce Type:</span>
+				<span class="label">Produce Type</span>
 				<select id="select_produce" onChange="refresh()">
 					<option value="0" selected="true">Raw</option>
 					<option value="1">Jar</option>
@@ -73,18 +73,18 @@
 			<div class="related">
 
 				<label class="in">
-					<span class="label">Equipment:</span>
+					<span class="label">Equipment</span>
 					<input type="number" id="equipment" value="0" onChange="refresh()" />
 				</label>
 
 				<label class="in">
-					<!-- <span class="label">Non-existent:</span> -->
+					<!-- <span class="label">Non-existent</span> -->
 					<input type="checkbox" id="check_sellRaw" onChange="refresh()" />
 					<span class="label">Sell Raw If Necessary</span>
 				</label>
 
 				<label class="in">
-					<span class="label">Aging:</span>
+					<span class="label">Aging</span>
 					<select id="select_aging" onChange="refresh()">
 						<option value="0" selected="true">None</option>
 						<option value="1">Silver</option>
@@ -125,13 +125,13 @@
 			</label>
 
 			<label class="in">
-				<span class="label">Max Seed Money:</span>
+				<span class="label">Max Seed Money</span>
 				<input type="number" id="max_seed_money" value="0" onChange="refresh()" />
 			</label>
 
 			<div class="checkset">
 				<label class="in">
-					<!-- <span class="label">Process & Replant:</span> -->
+					<!-- <span class="label">Process & Replant</span> -->
 					<input type="checkbox" id="check_replant" onChange="refresh()" />
 					<span class="label">Process & replant (forces planting crops in pairs)</span>
 				</label>
@@ -143,7 +143,7 @@
 			</div>
 
 			<label class="in">
-				<span class="label">Fertilizer:</span>
+				<span class="label">Fertilizer</span>
 				<select id="select_fertilizer" onChange="refresh()">
 					<option value="0" selected="true">None</option>
 					<option value="1">Basic Fertilizer</option>
@@ -161,7 +161,7 @@
 			</label>
 
 			<label class="in" id="deluxe_speed_input">
-				<span class="label">Speed-Gro Source:</span>
+				<span class="label">Speed-Gro Source</span>
 				<select id="speed_gro_source" onChange="refresh()">
 					<option value="0" selected="true">Pierre</option>
 					<option value="1">Sandy</option>
@@ -170,64 +170,28 @@
 
 		</div>
 
-		<div class="related" comment="player options">
+		<div class="related" comment="farming level">
 
 			<label class="in">
-				<span class="label">Farming Level:</span>
+				<span class="label">Farming Level</span>
 				<input type="number" id="farming_level" value="0" onChange="refresh()" />
 			</label>
 
-			<tr>
-				<td colspan="2" class="sub">
-					<table cellspacing="2" class="subt">
-						<label class="in">
-							<!-- <span class="label">Level 5 Skill:</span> -->
-							<input type="checkbox" id="check_skillsTill" onChange="refresh()" />
-							<span class="label">Tiller (Level 5 skill)</span>
-						</label>
-						<label class="in">
-							<span class="label">Level 10 skill:</span>
-							<select id="select_skills" onChange="refresh()">
-								<option value="0" selected="true">None</option>
-								<option value="1">Agriculturist</option>
-								<option value="2">Artisan</option>
-							</select>
-						</label>
-					</table>
-				</td>
-				</td>
-
-			<tr>
-				<td colspan="2" class="sub">
-					<table class="subt">
-					</table>
-				</td>
-			</tr>
-
 			<label class="in">
-				<span class="label">Foraging Level:</span>
-				<input type="number" id="foraging_level" value="0" onChange="refresh()" />
+				<!-- <span class="label">Level 5 Skill</span> -->
+				<input type="checkbox" id="check_skillsTill" onChange="refresh()" />
+				<span class="label">Tiller (Level 5 skill)</span>
 			</label>
-
-			<tr>
-				<td colspan="2" class="sub">
-					<table cellspacing="2" class="subt">
-						<label class="in">
-							<!-- <span class="label">Level 5 skill:</span> -->
-							<input type="checkbox" id="check_skillsGatherer" onChange="refresh()" />
-							<span class="label">Gatherer (Level 5 skill)</span>
-						</label>
-						<label class="in">
-							<!-- <span class="label">Level 10 skill:</span> -->
-							<input type="checkbox" id="check_skillsBotanist" onChange="refresh()" />
-							<span class="label">Botanist (Level 10 skill)</span>
-						</label>
-					</table>
-				</td>
-			</tr>
-
 			<label class="in">
-				<span class="label">Farming Food Buff:</span>
+				<span class="label">Level 10 skill</span>
+				<select id="select_skills" onChange="refresh()">
+					<option value="0" selected="true">None</option>
+					<option value="1">Agriculturist</option>
+					<option value="2">Artisan</option>
+				</select>
+			</label>
+			<label class="in">
+				<span class="label">Farming Food Buff</span>
 				<select id="select_food" onChange="refresh()">
 					<option value="0" selected="true">None</option>
 					<option value="1">Maple Bar</option>
@@ -240,10 +204,28 @@
 			</label>
 		</div>
 
+		<div class="related" comment="foraging level">
+			<label class="in">
+				<span class="label">Foraging Level</span>
+				<input type="number" id="foraging_level" value="0" onChange="refresh()" />
+			</label>
+
+			<label class="in">
+				<!-- <span class="label">Level 5 skill</span> -->
+				<input type="checkbox" id="check_skillsGatherer" onChange="refresh()" />
+				<span class="label">Gatherer (Level 5 skill)</span>
+			</label>
+			<label class="in">
+				<!-- <span class="label">Level 10 skill</span> -->
+				<input type="checkbox" id="check_skillsBotanist" onChange="refresh()" />
+				<span class="label">Botanist (Level 10 skill)</span>
+			</label>
+		</div>
+
 		<div class="related" comment="App options">
 
 			<label class="in">
-				<span class="label">Profit Display:</span>
+				<span class="label">Profit Display</span>
 				<select id="select_profit_display" onChange="refresh()">
 					<option value="0" id="display_0" selected="true">Total Profit</option>
 					<option value="1" id="display_1">Daily Profit</option>
