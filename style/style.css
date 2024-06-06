@@ -363,61 +363,80 @@ select:disabled {
 	text-decoration: none;
 }
 
-.tooltipTitle {
-	font: 1em sans-serif;
+/* CHART */
+
+.graph > svg {
+	background-color: hsla(0, 0%, 20%, .8);
+	border: 1px solid #fff1;
+	backdrop-filter: blur(8px);
+	border-radius: 8px;
+}
+
+.bar { rx: 2px; }
+
+.profit.bar { fill: hsl(107, 71%, 42%); }
+.profit.bar.bad { fill: hsl(0, 80%, 42%); }
+.seed.bar { fill: rgb(196, 134, 73) }
+.fert.bar { fill: hsl(270, 57%, 57%); }
+
+.info-panel {
+	position: absolute;
+	z-index: 10;
+	visibility: hidden;
+	background: hsl(0, 0%, 17%);
+	background: hsla(0, 0%, 17%, 0.8);
+	padding: 8px;
+	border-radius: 8px;
+	border: 1px solid #fff1;
+	backdrop-filter: blur(16px);
+	box-shadow: 0 3px 6px 2px #0005;
 	color: #eeeeee;
+}
+
+.tooltipTitle {
+	font-size: 1rem;
 	margin: 0px;
 }
 
 .tooltipTitleExtra {
-	font: 1em sans-serif;
-	color: #eeeeee;
+	font-size: 1rem;
 	margin: 0px;
 	margin-top: 12px;
 }
 
 .tooltipTable {
-	padding: 4px 8px 4px 8px;
+	font-size: 0.875rem;
+	padding-block: 4px;
+	padding-inline: 8px;
+}
+
+.tooltipTable td {
+	padding-inline: 4px;
+	margin-bottom: 1px;
 }
 
 .tooltipTdLeft {
-	font: 0.875em sans-serif;
-	color: #eeeeee;
-	padding: 1px 4px 0px 4px;
-	margin-bottom: 1px;
-    vertical-align: bottom;
+	padding-block: 1px 0px;
+	vertical-align: bottom;
 }
 
 .tooltipTdLeftSpace {
-	font: 0.875em sans-serif;
-	color: #eeeeee;
-	padding: 8px 4px 0px 4px;
-	margin-bottom: 1px;
-    vertical-align: bottom;
+	padding-block: 8px 0px;
+	vertical-align: bottom;
 }
 
 .tooltipTdRight {
-	font: 0.875em sans-serif;
-	color: #eeeeee;
-	padding: 0px 4px 0px 4px;
-	margin-bottom: 1px;
-    vertical-align: bottom;
+	vertical-align: bottom;
 }
 
 .tooltipTdRightPos {
-	font: 0.875em sans-serif;
 	color: lime;
-	padding: 0px 4px 0px 4px;
-	margin-bottom: 1px;
-    vertical-align: bottom;
+	vertical-align: bottom;
 }
 
 .tooltipTdRightNeg {
-	font: 0.875em sans-serif;
 	color: red;
-	padding: 0px 4px 0px 4px;
-	margin-bottom: 1px;
-    vertical-align: bottom;
+	vertical-align: bottom;
 }
 
 .gold {
